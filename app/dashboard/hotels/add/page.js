@@ -1,17 +1,31 @@
-'use client';
+"use client";
 
-import { useState, useEffect, lazy, Suspense } from 'react';
-import { useRouter } from 'next/navigation';
-import toast, { Toaster } from 'react-hot-toast';
-import { createHotel, saveHotelImageUrls, saveHotelRooms, saveHotelAmenities, saveHotelReviewAggregates } from '@/lib/services/hotels.service';
-import { getTypes, getChains, getAreas } from '@/lib/services/masterData.service';
+import { useState, useEffect, lazy, Suspense } from "react";
+import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
+import {
+  createHotel,
+  saveHotelImageUrls,
+  saveHotelRooms,
+  saveHotelAmenities,
+  saveHotelReviewAggregates,
+} from "@/lib/services/hotels.service";
+import {
+  getTypes,
+  getChains,
+  getAreas,
+} from "@/lib/services/masterData.service";
 
 // Lazy load heavy components
-const ImageUrlInput = lazy(() => import('@/components/hotels/ImageUrlInput'));
-const AmenitiesSection = lazy(() => import('@/components/hotels/AmenitiesSection'));
-const FAQSection = lazy(() => import('@/components/hotels/FAQSection'));
-const RoomsSection = lazy(() => import('@/components/hotels/RoomsSection'));
-const ReviewAggregatesSection = lazy(() => import('@/components/hotels/ReviewAggregatesSection'));
+const ImageUrlInput = lazy(() => import("@/components/hotels/ImageUrlInput"));
+const AmenitiesSection = lazy(
+  () => import("@/components/hotels/AmenitiesSection"),
+);
+const FAQSection = lazy(() => import("@/components/hotels/FAQSection"));
+const RoomsSection = lazy(() => import("@/components/hotels/RoomsSection"));
+const ReviewAggregatesSection = lazy(
+  () => import("@/components/hotels/ReviewAggregatesSection"),
+);
 
 // Loading component for lazy loaded sections
 const SectionLoader = () => (
@@ -25,24 +39,24 @@ export default function AddHotelPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [activeSection, setActiveSection] = useState('basic');
+  const [activeSection, setActiveSection] = useState("basic");
   const [canSubmit, setCanSubmit] = useState(true); // Prevent accidental submission after navigation
-  
+
   // Form data
   const [formData, setFormData] = useState({
-    name_en: '',
-    name_ar: '',
-    type_id: '',
-    chain_id: '',
-    area_id: '',
-    address_en: '',
-    address_ar: '',
-    star_rating: '',
+    name_en: "",
+    name_ar: "",
+    type_id: "",
+    chain_id: "",
+    area_id: "",
+    address_en: "",
+    address_ar: "",
+    star_rating: "",
     rank: 0,
-    description_en: '',
-    description_ar: '',
-    thumbnail_url: '',
-    status: 'active',
+    description_en: "",
+    description_ar: "",
+    thumbnail_url: "",
+    status: "active",
   });
 
   // Dynamic sections
@@ -66,17 +80,17 @@ export default function AddHotelPage() {
     try {
       // Fetch only active master data for dropdowns
       const [typesResult, chainsResult, areasResult] = await Promise.all([
-        getTypes(true),  // activeOnly = true
+        getTypes(true), // activeOnly = true
         getChains(true), // activeOnly = true
-        getAreas(true),  // activeOnly = true
+        getAreas(true), // activeOnly = true
       ]);
 
       setTypes(typesResult.data || []);
       setChains(chainsResult.data || []);
       setAreas(areasResult.data || []);
     } catch (err) {
-      console.error('Error loading master data:', err);
-      toast.error('Failed to load form data');
+      console.error("Error loading master data:", err);
+      toast.error("Failed to load form data");
     } finally {
       setLoading(false);
     }
@@ -84,47 +98,51 @@ export default function AddHotelPage() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const validateForm = () => {
     if (!formData.name_en || !formData.name_ar) {
-      toast.error('Please fill in hotel name in both languages');
-      setActiveSection('basic');
+      toast.error("Please fill in hotel name in both languages");
+      setActiveSection("basic");
       return false;
     }
 
     if (!formData.type_id || !formData.area_id) {
-      toast.error('Please select type and area');
-      setActiveSection('basic');
+      toast.error("Please select type and area");
+      setActiveSection("basic");
       return false;
     }
 
     // Validate rooms if any (room_type, bedding, view required; at least one package per room)
     if (rooms.length > 0) {
-      const invalidRoom = rooms.find(r => !r.room_type || !r.bedding || !r.view);
+      const invalidRoom = rooms.find(
+        (r) => !r.room_type || !r.bedding || !r.view,
+      );
       if (invalidRoom) {
-        toast.error('Please set room type, bedding and view for all rooms');
-        setActiveSection('rooms');
+        toast.error("Please set room type, bedding and view for all rooms");
+        setActiveSection("rooms");
         return false;
       }
-      const roomWithoutPackage = rooms.find(r => !Array.isArray(r.packages) || r.packages.length === 0);
+      const roomWithoutPackage = rooms.find(
+        (r) => !Array.isArray(r.packages) || r.packages.length === 0,
+      );
       if (roomWithoutPackage) {
-        toast.error('Each room must have at least one package');
-        setActiveSection('rooms');
+        toast.error("Each room must have at least one package");
+        setActiveSection("rooms");
         return false;
       }
     }
 
     // Validate FAQs if any
     if (faqs.length > 0) {
-      const invalidFAQ = faqs.find(f => !f.question_en || !f.answer_en);
+      const invalidFAQ = faqs.find((f) => !f.question_en || !f.answer_en);
       if (invalidFAQ) {
-        toast.error('Please fill in all FAQ fields');
-        setActiveSection('faq');
+        toast.error("Please fill in all FAQ fields");
+        setActiveSection("faq");
         return false;
       }
     }
@@ -135,17 +153,24 @@ export default function AddHotelPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log('handleSubmit called - activeSection:', activeSection, 'canSubmit:', canSubmit);
+    console.log(
+      "handleSubmit called - activeSection:",
+      activeSection,
+      "canSubmit:",
+      canSubmit,
+    );
 
     // Only allow submission from the Rooms section
-    if (activeSection !== 'rooms') {
-      console.log('Form submission blocked - not on Rooms section');
+    if (activeSection !== "rooms") {
+      console.log("Form submission blocked - not on Rooms section");
       return;
     }
 
     // Prevent accidental submission right after navigation
     if (!canSubmit) {
-      console.log('Form submission blocked - canSubmit is false (cooldown active)');
+      console.log(
+        "Form submission blocked - canSubmit is false (cooldown active)",
+      );
       return;
     }
 
@@ -154,7 +179,7 @@ export default function AddHotelPage() {
     }
 
     setSubmitting(true);
-    
+
     try {
       // Convert string values to numbers for foreign keys
       const hotelData = {
@@ -162,7 +187,9 @@ export default function AddHotelPage() {
         type_id: parseInt(formData.type_id),
         chain_id: formData.chain_id ? parseInt(formData.chain_id) : null,
         area_id: parseInt(formData.area_id),
-        star_rating: formData.star_rating ? parseInt(formData.star_rating) : null,
+        star_rating: formData.star_rating
+          ? parseInt(formData.star_rating)
+          : null,
         rank: parseInt(formData.rank) || 0,
       };
 
@@ -170,29 +197,35 @@ export default function AddHotelPage() {
       const { data: hotel, error } = await createHotel(hotelData);
 
       if (error) {
-        toast.error('Failed to create hotel: ' + error);
+        toast.error("Failed to create hotel: " + error);
         setSubmitting(false);
         return;
       }
 
       // Save image URLs if any
       if (imageUrls.length > 0 && hotel?.id) {
-        const { error: imageError } = await saveHotelImageUrls(hotel.id, imageUrls);
-        
+        const { error: imageError } = await saveHotelImageUrls(
+          hotel.id,
+          imageUrls,
+        );
+
         if (imageError) {
-          console.error('Failed to save image URLs:', imageError);
-          toast.error('Hotel created but images failed to save');
+          console.error("Failed to save image URLs:", imageError);
+          toast.error("Hotel created but images failed to save");
         }
       }
 
       // Save amenities if any
       if (amenities.length > 0 && hotel?.id) {
-        console.log('Saving amenities:', amenities);
-        const { error: amenitiesError } = await saveHotelAmenities(hotel.id, amenities);
-        
+        console.log("Saving amenities:", amenities);
+        const { error: amenitiesError } = await saveHotelAmenities(
+          hotel.id,
+          amenities,
+        );
+
         if (amenitiesError) {
-          console.error('Failed to save amenities:', amenitiesError);
-          toast.error('Hotel created but amenities failed to save');
+          console.error("Failed to save amenities:", amenitiesError);
+          toast.error("Hotel created but amenities failed to save");
         }
       }
 
@@ -200,43 +233,43 @@ export default function AddHotelPage() {
       if (rooms.length > 0 && hotel?.id) {
         const { error: roomsError } = await saveHotelRooms(hotel.id, rooms);
         if (roomsError) {
-          console.error('Failed to save rooms:', roomsError);
-          toast.error('Hotel created but rooms failed to save');
+          console.error("Failed to save rooms:", roomsError);
+          toast.error("Hotel created but rooms failed to save");
         }
       }
 
       if (reviewAggregates.length > 0 && hotel?.id) {
         const validReviews = reviewAggregates.filter(
-          (r) => r && String(r.source || '').trim() !== ''
+          (r) => r && String(r.source || "").trim() !== "",
         );
         if (validReviews.length > 0) {
           const { error: reviewsError } = await saveHotelReviewAggregates(
             hotel.id,
-            validReviews
+            validReviews,
           );
           if (reviewsError) {
-            console.error('Failed to save review aggregates:', reviewsError);
-            toast.error('Hotel created but review aggregates failed to save');
+            console.error("Failed to save review aggregates:", reviewsError);
+            toast.error("Hotel created but review aggregates failed to save");
           }
         }
       }
 
       // Show success message
-      toast.success('Hotel created successfully with all details!');
+      toast.success("Hotel created successfully with all details!");
 
       setTimeout(() => {
-        router.push('/dashboard/hotels');
+        router.push("/dashboard/hotels");
       }, 1000);
     } catch (err) {
-      console.error('Error creating hotel:', err);
-      toast.error('Failed to create hotel');
+      console.error("Error creating hotel:", err);
+      toast.error("Failed to create hotel");
       setSubmitting(false);
     }
   };
 
   const handleCancel = () => {
-    console.log('Cancel button clicked');
-    router.push('/dashboard/hotels');
+    console.log("Cancel button clicked");
+    router.push("/dashboard/hotels");
   };
 
   if (loading) {
@@ -254,23 +287,24 @@ export default function AddHotelPage() {
   }
 
   const sections = [
-    { id: 'basic', label: 'General Info', icon: '📝' },
-    { id: 'images', label: 'Images', icon: '🖼️' },
-    { id: 'amenities', label: 'Amenities', icon: '✨' },
-    { id: 'faq', label: 'FAQ', icon: '❓' },
-    { id: 'reviews', label: 'Reviews', icon: '⭐' },
-    { id: 'rooms', label: 'Rooms & Pricing', icon: '🛏️' },
+    { id: "basic", label: "General Info", icon: "📝" },
+    { id: "images", label: "Images", icon: "🖼️" },
+    { id: "amenities", label: "Amenities", icon: "✨" },
+    { id: "faq", label: "FAQ", icon: "❓" },
+    { id: "reviews", label: "Reviews", icon: "⭐" },
+    { id: "rooms", label: "Rooms & Pricing", icon: "🛏️" },
   ];
 
   return (
     <div className="space-y-6">
       <Toaster position="top-right" />
-      
+
       {/* Page Header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Add New Property</h1>
         <p className="text-gray-600 mt-1">
-          Create a new Property listing with all details
+          Create a new property with content, pricing, images, amenities, and
+          reviews to make it available for booking.{" "}
         </p>
       </div>
 
@@ -283,14 +317,15 @@ export default function AddHotelPage() {
                 key={section.id}
                 type="button"
                 onClick={() => {
-                  console.log('Tab clicked:', section.id);
+                  console.log("Tab clicked:", section.id);
                   setActiveSection(section.id);
                 }}
                 className={`
                   px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap
-                  ${activeSection === section.id
-                    ? 'text-blue-600 border-blue-600'
-                    : 'text-gray-600 hover:text-gray-900 hover:border-gray-300 border-transparent'
+                  ${
+                    activeSection === section.id
+                      ? "text-blue-600 border-blue-600"
+                      : "text-gray-600 hover:text-gray-900 hover:border-gray-300 border-transparent"
                   }
                 `}
               >
@@ -302,16 +337,20 @@ export default function AddHotelPage() {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6" onKeyDown={(e) => {
-          // Prevent ALL form submissions via Enter key
-          // Only allow explicit button clicks
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            console.log('Enter key pressed - prevented default submission');
-          }
-        }}>
+        <form
+          onSubmit={handleSubmit}
+          className="p-6"
+          onKeyDown={(e) => {
+            // Prevent ALL form submissions via Enter key
+            // Only allow explicit button clicks
+            if (e.key === "Enter") {
+              e.preventDefault();
+              console.log("Enter key pressed - prevented default submission");
+            }
+          }}
+        >
           {/* Basic Information */}
-          {activeSection === 'basic' && (
+          {activeSection === "basic" && (
             <div className="space-y-6">
               <div>
                 {/* <h2 className="text-lg font-semibold text-gray-900 mb-4">Basic Information</h2> */}
@@ -349,15 +388,15 @@ export default function AddHotelPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Type *
                     </label>
-                    <select 
+                    <select
                       name="type_id"
                       value={formData.type_id}
                       onChange={handleChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       required
                     >
-                      <option value="">Select type</option>
-                      {types.map(type => (
+                      <option value="">Select </option>
+                      {types.map((type) => (
                         <option key={type.id} value={type.id}>
                           {type.name_en}
                         </option>
@@ -368,14 +407,14 @@ export default function AddHotelPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Chain
                     </label>
-                    <select 
+                    <select
                       name="chain_id"
                       value={formData.chain_id}
                       onChange={handleChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                      <option value="">Select chain (optional)</option>
-                      {chains.map(chain => (
+                      <option value="">Select</option>
+                      {chains.map((chain) => (
                         <option key={chain.id} value={chain.id}>
                           {chain.name_en}
                         </option>
@@ -386,15 +425,15 @@ export default function AddHotelPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Area *
                     </label>
-                    <select 
+                    <select
                       name="area_id"
                       value={formData.area_id}
                       onChange={handleChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       required
                     >
-                      <option value="">Select area</option>
-                      {areas.map(area => (
+                      <option value="">Select</option>
+                      {areas.map((area) => (
                         <option key={area.id} value={area.id}>
                           {area.name_en}
                         </option>
@@ -403,15 +442,16 @@ export default function AddHotelPage() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Star Rating
+                      Star Rating *
                     </label>
-                    <select 
+                    <select
                       name="star_rating"
                       value={formData.star_rating}
                       onChange={handleChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      required
                     >
-                      <option value="">Select rating</option>
+                      <option value="">Select</option>
                       <option value="1">1 Star</option>
                       <option value="2">2 Stars</option>
                       <option value="3">3 Stars</option>
@@ -421,27 +461,28 @@ export default function AddHotelPage() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Rank
+                      Rank *
                     </label>
                     <input
                       type="number"
                       name="rank"
                       value={formData.rank}
                       onChange={handleChange}
+                      required
                       placeholder="0"
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       onWheel={(e) => e.target.blur()}
-                        onKeyDown={(e) =>
-                          ["ArrowUp", "ArrowDown"].includes(e.key) &&
-                          e.preventDefault()
-                        }
+                      onKeyDown={(e) =>
+                        ["ArrowUp", "ArrowDown"].includes(e.key) &&
+                        e.preventDefault()
+                      }
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Status
                     </label>
-                    <select 
+                    <select
                       name="status"
                       value={formData.status}
                       onChange={handleChange}
@@ -455,7 +496,9 @@ export default function AddHotelPage() {
               </div>
 
               <div>
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Address</h2>
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                  Address
+                </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -488,7 +531,9 @@ export default function AddHotelPage() {
               </div>
 
               <div>
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Description</h2>
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                  Description
+                </h2>
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -534,16 +579,19 @@ export default function AddHotelPage() {
                     </p>
                     {formData.thumbnail_url && (
                       <div className="mt-3">
-                        <p className="text-xs font-medium text-gray-700 mb-2">Preview:</p>
+                        <p className="text-xs font-medium text-gray-700 mb-2">
+                          Preview:
+                        </p>
                         <div className="w-32 h-20 rounded-lg overflow-hidden border border-gray-200">
                           <img
                             src={formData.thumbnail_url}
                             alt="Thumbnail preview"
                             className="w-full h-full object-cover"
                             onError={(e) => {
-                              e.target.src = '';
-                              e.target.alt = 'Invalid image URL';
-                              e.target.className = 'w-full h-full flex items-center justify-center text-xs text-gray-400';
+                              e.target.src = "";
+                              e.target.alt = "Invalid image URL";
+                              e.target.className =
+                                "w-full h-full flex items-center justify-center text-xs text-gray-400";
                             }}
                           />
                         </div>
@@ -556,9 +604,11 @@ export default function AddHotelPage() {
           )}
 
           {/* Images Section */}
-          {activeSection === 'images' && (
+          {activeSection === "images" && (
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Hotel Images</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                Hotel Images
+              </h2>
               <Suspense fallback={<SectionLoader />}>
                 <ImageUrlInput imageUrls={imageUrls} onChange={setImageUrls} />
               </Suspense>
@@ -566,19 +616,26 @@ export default function AddHotelPage() {
           )}
 
           {/* Amenities Section */}
-          {activeSection === 'amenities' && (
+          {activeSection === "amenities" && (
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Amenities</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                Amenities
+              </h2>
               <Suspense fallback={<SectionLoader />}>
-                <AmenitiesSection selectedAmenities={amenities} onChange={setAmenities} />
+                <AmenitiesSection
+                  selectedAmenities={amenities}
+                  onChange={setAmenities}
+                />
               </Suspense>
             </div>
           )}
 
           {/* FAQ Section */}
-          {activeSection === 'faq' && (
+          {activeSection === "faq" && (
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Frequently Asked Questions</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                Frequently Asked Questions
+              </h2>
               <Suspense fallback={<SectionLoader />}>
                 <FAQSection faqs={faqs} onChange={setFAQs} />
               </Suspense>
@@ -586,9 +643,11 @@ export default function AddHotelPage() {
           )}
 
           {/* Reviews Section */}
-          {activeSection === 'reviews' && (
+          {activeSection === "reviews" && (
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Reviews</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                Reviews
+              </h2>
               <Suspense fallback={<SectionLoader />}>
                 <ReviewAggregatesSection
                   reviews={reviewAggregates}
@@ -599,9 +658,11 @@ export default function AddHotelPage() {
           )}
 
           {/* Rooms Section */}
-          {activeSection === 'rooms' && (
+          {activeSection === "rooms" && (
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Rooms & Pricing</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                Rooms & Pricing
+              </h2>
               <Suspense fallback={<SectionLoader />}>
                 <RoomsSection rooms={rooms} onChange={setRooms} />
               </Suspense>
@@ -610,7 +671,7 @@ export default function AddHotelPage() {
 
           {/* Form Actions */}
           <div className="mt-8 flex items-center justify-between pt-6 border-t border-gray-200">
-            <button 
+            <button
               type="button"
               onClick={handleCancel}
               className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
@@ -619,11 +680,13 @@ export default function AddHotelPage() {
               Cancel
             </button>
             <div className="flex gap-3">
-              {activeSection !== 'basic' && (
+              {activeSection !== "basic" && (
                 <button
                   type="button"
                   onClick={() => {
-                    const currentIndex = sections.findIndex(s => s.id === activeSection);
+                    const currentIndex = sections.findIndex(
+                      (s) => s.id === activeSection,
+                    );
                     if (currentIndex > 0) {
                       setActiveSection(sections[currentIndex - 1].id);
                     }
@@ -634,22 +697,27 @@ export default function AddHotelPage() {
                   Previous
                 </button>
               )}
-              {activeSection !== 'rooms' ? (
+              {activeSection !== "rooms" ? (
                 <button
                   type="button"
                   onClick={() => {
-                    console.log('Next button clicked from section:', activeSection);
-                    const currentIndex = sections.findIndex(s => s.id === activeSection);
+                    console.log(
+                      "Next button clicked from section:",
+                      activeSection,
+                    );
+                    const currentIndex = sections.findIndex(
+                      (s) => s.id === activeSection,
+                    );
                     if (currentIndex < sections.length - 1) {
                       const nextSection = sections[currentIndex + 1].id;
-                      console.log('Navigating to:', nextSection);
+                      console.log("Navigating to:", nextSection);
                       setActiveSection(nextSection);
-                      
+
                       // If navigating to Rooms section, add a brief cooldown to prevent accidental submission
-                      if (nextSection === 'rooms') {
+                      if (nextSection === "rooms") {
                         setCanSubmit(false);
                         setTimeout(() => {
-                          console.log('Submit cooldown ended - can submit now');
+                          console.log("Submit cooldown ended - can submit now");
                           setCanSubmit(true);
                         }, 500); // 500ms cooldown
                       }
@@ -660,12 +728,12 @@ export default function AddHotelPage() {
                   Next
                 </button>
               ) : (
-                <button 
+                <button
                   type="submit"
                   className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
                   disabled={submitting}
                 >
-                  {submitting ? 'Creating...' : 'Create Hotel'}
+                  {submitting ? "Creating..." : "Create Hotel"}
                 </button>
               )}
             </div>

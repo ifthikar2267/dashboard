@@ -10,7 +10,6 @@ function safeArray(val) {
 
 function emptyReview() {
   return {
-    source: '',
     average_rating: '',
     total_reviews: '',
   };
@@ -51,7 +50,7 @@ export default function ReviewAggregatesSection({ reviews = [], onChange }) {
     (idx, field, value) => {
       if (idx < 0 || idx >= list.length) return;
       const next = list.map((r, i) =>
-        i === idx ? { ...emptyReview(), ...r, [field]: value } : { ...emptyReview(), ...r }
+        i === idx ? { ...emptyReview(), ...r, [field]: value } : r
       );
       update(next);
     },
@@ -59,11 +58,12 @@ export default function ReviewAggregatesSection({ reviews = [], onChange }) {
   );
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 w-full">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <Typography variant="subtitle2" color="text.secondary">
-          {list.length} review source{list.length !== 1 ? 's' : ''}
+          {list.length} review aggregate{list.length !== 1 ? 's' : ''}
         </Typography>
+
         <Button
           type="button"
           variant="outlined"
@@ -71,13 +71,13 @@ export default function ReviewAggregatesSection({ reviews = [], onChange }) {
           startIcon={<AddIcon />}
           onClick={addReview}
         >
-          Add review source
+          Add review
         </Button>
       </div>
 
       {list.length === 0 ? (
         <Typography variant="body2" color="text.secondary">
-          Add review aggregates (e.g. Google, TripAdvisor) with average rating and total review count.
+          Add review aggregate with average rating and total review count.
         </Typography>
       ) : (
         <div className="grid grid-cols-1 gap-4">
@@ -85,49 +85,60 @@ export default function ReviewAggregatesSection({ reviews = [], onChange }) {
             <Box
               key={idx}
               sx={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                alignItems: 'flex-start',
+                display: 'grid',
+                gridTemplateColumns: {
+                  xs: '1fr',
+                  sm: '1fr 1fr auto',
+                },
                 gap: 2,
+                alignItems: 'center',
                 p: 2,
                 border: 1,
                 borderColor: 'divider',
-                borderRadius: 1,
+                borderRadius: 2,
                 bgcolor: 'grey.50',
+                width: '100%',
               }}
             >
               <TextField
-                size="small"
-                label="Source"
-                placeholder="e.g. Google, TripAdvisor"
-                value={review.source || ''}
-                onChange={(e) => setReviewField(idx, 'source', e.target.value)}
-                sx={{ minWidth: 160, flex: '1 1 160px' }}
-              />
-              <TextField
+                fullWidth
                 size="small"
                 label="Average rating (0–10)"
                 type="number"
                 inputProps={{ min: 0, max: 10, step: 0.1 }}
-                value={review.average_rating === '' ? '' : review.average_rating}
-                onChange={(e) => setReviewField(idx, 'average_rating', e.target.value)}
-                sx={{ width: 140 }}
+                value={review.average_rating}
+                onChange={(e) =>
+                  setReviewField(idx, 'average_rating', e.target.value)
+                }
+                onWheel={(e) => e.target.blur()}
+                onKeyDown={(e) =>
+                  ['ArrowUp', 'ArrowDown'].includes(e.key) &&
+                  e.preventDefault()
+                }
               />
+
               <TextField
+                fullWidth
                 size="small"
                 label="Total reviews"
                 type="number"
                 inputProps={{ min: 0, step: 1 }}
-                value={review.total_reviews === '' ? '' : review.total_reviews}
-                onChange={(e) => setReviewField(idx, 'total_reviews', e.target.value)}
-                sx={{ width: 140 }}
+                value={review.total_reviews}
+                onChange={(e) =>
+                  setReviewField(idx, 'total_reviews', e.target.value)
+                }
+                onWheel={(e) => e.target.blur()}
+                onKeyDown={(e) =>
+                  ['ArrowUp', 'ArrowDown'].includes(e.key) &&
+                  e.preventDefault()
+                }
               />
+
               <IconButton
                 type="button"
                 color="error"
                 size="small"
                 onClick={() => removeReview(idx)}
-                aria-label="Remove review source"
               >
                 <DeleteIcon fontSize="small" />
               </IconButton>

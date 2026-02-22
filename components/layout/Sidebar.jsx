@@ -15,6 +15,7 @@ const menuItems = [
     label: 'Properties',
     icon: Hotel,
     path: '/dashboard/hotels',
+    exact: true,
   },
   {
     label: 'Add Property',
@@ -31,9 +32,17 @@ const menuItems = [
 export default function Sidebar({ isOpen, toggleSidebar }) {
   const pathname = usePathname();
 
-  const isActive = (path) => {
-    return pathname?.startsWith(path);
-  };
+  const isActive = (item) => {
+  if (!pathname) return false;
+
+  // If exact flag is true → only match exact route
+  if (item.exact) {
+    return pathname === item.path;
+  }
+
+  // Otherwise match exact or nested
+  return pathname === item.path;
+};
 
   return (
     <>
@@ -79,7 +88,7 @@ export default function Sidebar({ isOpen, toggleSidebar }) {
         <nav className="flex flex-col p-3 space-y-1 mt-2">
           {menuItems.map((item) => {
             const Icon = item.icon;
-            const active = isActive(item.path);
+            const active = isActive(item);
 
             return (
               <Link
