@@ -41,6 +41,7 @@ export default function AddHotelPage() {
   const [submitting, setSubmitting] = useState(false);
   const [activeSection, setActiveSection] = useState("basic");
   const [canSubmit, setCanSubmit] = useState(true); // Prevent accidental submission after navigation
+  const [errors, setErrors] = useState({ basic: {}, rooms: [], faqs: [] });
 
   // Form data
   const [formData, setFormData] = useState({
@@ -52,7 +53,7 @@ export default function AddHotelPage() {
     address_en: "",
     address_ar: "",
     star_rating: "",
-    rank: 0,
+    rank: "",
     description_en: "",
     description_ar: "",
     thumbnail_url: "",
@@ -98,54 +99,101 @@ export default function AddHotelPage() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
+
+    // 🔥 Clear error for that specific field when user types
+    if (errors.basic?.[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        basic: {
+          ...prev.basic,
+          [name]: false,
+        },
+      }));
+    }
   };
 
   const validateForm = () => {
-    if (!formData.name_en || !formData.name_ar) {
-      toast.error("Please fill in hotel name in both languages");
+    const newErrors = {
+      basic: {},
+      rooms: [],
+      faqs: [],
+    };
+
+    // ===== BASIC INFO =====
+    if (!formData.name_en) newErrors.basic.name_en = true;
+    if (!formData.name_ar) newErrors.basic.name_ar = true;
+    if (!formData.type_id) newErrors.basic.type_id = true;
+    if (!formData.area_id) newErrors.basic.area_id = true;
+    if (!formData.star_rating) newErrors.basic.star_rating = true;
+    if (!formData.rank === "" || formData.rank === null)
+      newErrors.basic.rank = true;
+
+    if (Object.keys(newErrors.basic).length > 0) {
+      setErrors(newErrors);
+      toast.error("Please fill required basic information");
       setActiveSection("basic");
       return false;
     }
 
-    if (!formData.type_id || !formData.area_id) {
-      toast.error("Please select type and area");
-      setActiveSection("basic");
-      return false;
-    }
-
-    // Validate rooms if any (room_type, bedding, view required; at least one package per room)
+    // ===== ROOMS =====
     if (rooms.length > 0) {
-      const invalidRoom = rooms.find(
-        (r) => !r.room_type || !r.bedding || !r.view,
+      newErrors.rooms = rooms.map((room) => {
+        const roomError = {};
+
+        if (!room.room_type) roomError.room_type = true;
+        if (!room.bedding) roomError.bedding = true;
+        if (!room.view) roomError.view = true;
+
+        if (!Array.isArray(room.packages) || room.packages.length === 0) {
+          roomError.packages = true;
+        }
+
+        return roomError;
+      });
+
+      const hasRoomErrors = newErrors.rooms.some(
+        (room) => Object.keys(room).length > 0,
       );
-      if (invalidRoom) {
-        toast.error("Please set room type, bedding and view for all rooms");
-        setActiveSection("rooms");
-        return false;
-      }
-      const roomWithoutPackage = rooms.find(
-        (r) => !Array.isArray(r.packages) || r.packages.length === 0,
-      );
-      if (roomWithoutPackage) {
-        toast.error("Each room must have at least one package");
+
+      if (hasRoomErrors) {
+        setErrors(newErrors);
+        toast.error("Please complete room details");
         setActiveSection("rooms");
         return false;
       }
     }
 
-    // Validate FAQs if any
+    // ===== FAQ =====
     if (faqs.length > 0) {
-      const invalidFAQ = faqs.find((f) => !f.question_en || !f.answer_en);
-      if (invalidFAQ) {
-        toast.error("Please fill in all FAQ fields");
+      newErrors.faqs = faqs.map((faq) => {
+        const faqError = {};
+        if (!faq.question_en) faqError.question_en = true;
+        if (!faq.answer_en) faqError.answer_en = true;
+        return faqError;
+      });
+
+      const hasFaqErrors = newErrors.faqs.some(
+        (faq) => Object.keys(faq).length > 0,
+      );
+
+      if (hasFaqErrors) {
+        setErrors(newErrors);
+        toast.error("Please fill all FAQ fields");
         setActiveSection("faq");
         return false;
       }
     }
+
+    setErrors({
+      basic: {},
+      rooms: [],
+      faqs: [],
+    });
 
     return true;
   };
@@ -365,7 +413,12 @@ export default function AddHotelPage() {
                       value={formData.name_en}
                       onChange={handleChange}
                       placeholder="Enter hotel name in English"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2
+    ${
+      errors.basic?.name_en
+        ? "border-red-300 focus:ring-red-500"
+        : "border-gray-300 focus:ring-blue-500"
+    }`}
                       required
                     />
                   </div>
@@ -379,7 +432,12 @@ export default function AddHotelPage() {
                       value={formData.name_ar}
                       onChange={handleChange}
                       placeholder="Enter hotel name in Arabic"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2
+    ${
+      errors.basic?.name_ar
+        ? "border-red-300 focus:ring-red-500"
+        : "border-gray-300 focus:ring-blue-500"
+    }`}
                       dir="rtl"
                       required
                     />
@@ -392,7 +450,12 @@ export default function AddHotelPage() {
                       name="type_id"
                       value={formData.type_id}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2
+    ${
+      errors.basic?.type_id
+        ? "border-red-300 focus:ring-red-500"
+        : "border-gray-300 focus:ring-blue-500"
+    }`}
                       required
                     >
                       <option value="">Select </option>
@@ -429,7 +492,12 @@ export default function AddHotelPage() {
                       name="area_id"
                       value={formData.area_id}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2
+    ${
+      errors.basic?.area_id
+        ? "border-red-300 focus:ring-red-500"
+        : "border-gray-300 focus:ring-blue-500"
+    }`}
                       required
                     >
                       <option value="">Select</option>
@@ -448,7 +516,12 @@ export default function AddHotelPage() {
                       name="star_rating"
                       value={formData.star_rating}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2
+    ${
+      errors.basic?.star_rating
+        ? "border-red-300 focus:ring-red-500"
+        : "border-gray-300 focus:ring-blue-500"
+    }`}
                       required
                     >
                       <option value="">Select</option>
@@ -470,7 +543,12 @@ export default function AddHotelPage() {
                       onChange={handleChange}
                       required
                       placeholder="0"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2
+    ${
+      errors.basic?.rank
+        ? "border-red-300 focus:ring-red-500"
+        : "border-gray-300 focus:ring-blue-500"
+    }`}
                       onWheel={(e) => e.target.blur()}
                       onKeyDown={(e) =>
                         ["ArrowUp", "ArrowDown"].includes(e.key) &&
