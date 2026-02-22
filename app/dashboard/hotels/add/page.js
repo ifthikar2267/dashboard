@@ -268,9 +268,9 @@ export default function AddHotelPage() {
       
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Add New Hotel</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Add New Property</h1>
         <p className="text-gray-600 mt-1">
-          Create a new hotel listing with all details
+          Create a new Property listing with all details
         </p>
       </div>
 
@@ -318,7 +318,7 @@ export default function AddHotelPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Hotel Name (EN) *
+                      Property Name (EN) *
                     </label>
                     <input
                       type="text"
@@ -332,7 +332,7 @@ export default function AddHotelPage() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Hotel Name (AR) *
+                      Property Name (AR) *
                     </label>
                     <input
                       type="text"

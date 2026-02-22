@@ -269,7 +269,6 @@ export default function RoomsSection({ rooms = [], onChange }) {
                   <section aria-label="Room configuration">
                     <Typography
                       variant="subtitle2"
-                      color="text.secondary"
                       fontWeight={600}
                       sx={{ mb: 2 }}
                     >
@@ -351,7 +350,7 @@ export default function RoomsSection({ rooms = [], onChange }) {
                       fontWeight={600}
                       sx={{ mb: 1.5 }}
                     >
-                      Image URLs
+                      Images
                     </Typography>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                       <div className="md:col-span-2">
@@ -573,7 +572,7 @@ export default function RoomsSection({ rooms = [], onChange }) {
                                     <TextField
                                       fullWidth
                                       size="small"
-                                      label="Base Price"
+                                      label="Seling Price"
                                       type="number"
                                       inputProps={{ min: 0, step: 0.01 }}
                                       value={pkgSafe.base_price ?? ""}

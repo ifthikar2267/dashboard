@@ -5,8 +5,8 @@ import { Menu } from '@mui/icons-material';
 
 // Map routes to page titles
 const pageTitles = {
-  '/dashboard/hotels': 'Hotels',
-  '/dashboard/hotels/add': 'Add Hotel',
+  '/dashboard/hotels': 'Properties',
+  '/dashboard/hotels/add': 'Add Property',
   '/dashboard/master-data': 'Master Data',
 };
 

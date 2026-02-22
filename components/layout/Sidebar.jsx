@@ -12,12 +12,12 @@ import {
 
 const menuItems = [
   {
-    label: 'Hotels',
+    label: 'Properties',
     icon: Hotel,
     path: '/dashboard/hotels',
   },
   {
-    label: 'Add Hotel',
+    label: 'Add Property',
     icon: AddBusiness,
     path: '/dashboard/hotels/add',
   },
