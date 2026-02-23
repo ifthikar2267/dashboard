@@ -104,7 +104,6 @@ export default function EditHotelPage() {
 
         const aggregates = (hotel.review_aggregates || []).map((r) => ({
           id: r.id,
-          source: r.source || '',
           average_rating: r.average_rating ?? '',
           total_reviews: r.total_reviews ?? '',
         }));
