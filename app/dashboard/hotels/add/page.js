@@ -71,6 +71,12 @@ export default function AddHotelPage() {
   const [types, setTypes] = useState([]);
   const [chains, setChains] = useState([]);
   const [areas, setAreas] = useState([]);
+  const [areaSearch, setAreaSearch] = useState("");
+  const [showAreaDropdown, setShowAreaDropdown] = useState(false);
+
+  const filteredAreas = areas.filter((area) =>
+    area.name_en.toLowerCase().includes(areaSearch.toLowerCase()),
+  );
 
   useEffect(() => {
     loadMasterData();
@@ -117,6 +123,17 @@ export default function AddHotelPage() {
     }
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest(".relative")) {
+        setShowAreaDropdown(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
+
   const validateForm = () => {
     const newErrors = {
       basic: {},
@@ -130,8 +147,14 @@ export default function AddHotelPage() {
     if (!formData.type_id) newErrors.basic.type_id = true;
     if (!formData.area_id) newErrors.basic.area_id = true;
     if (!formData.star_rating) newErrors.basic.star_rating = true;
-    if (!formData.rank === "" || formData.rank === null)
+    if (!formData.rank && formData.rank !== 0) {
       newErrors.basic.rank = true;
+    }
+    if (!formData.address_en) newErrors.basic.address_en = true;
+    if (!formData.address_ar) newErrors.basic.address_ar = true;
+    if (!formData.thumbnail_url?.trim()) {
+      newErrors.basic.thumbnail_url = true;
+    }
 
     if (Object.keys(newErrors.basic).length > 0) {
       setErrors(newErrors);
@@ -484,29 +507,64 @@ export default function AddHotelPage() {
                       ))}
                     </select>
                   </div>
-                  <div>
+                  <div className="relative">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Area *
                     </label>
-                    <select
-                      name="area_id"
-                      value={formData.area_id}
-                      onChange={handleChange}
+
+                    <input
+                      type="text"
+                      value={areaSearch}
+                      onChange={(e) => {
+                        setAreaSearch(e.target.value);
+                        setShowAreaDropdown(true);
+
+                        // Clear selected area if user edits
+                        setFormData((prev) => ({
+                          ...prev,
+                          area_id: "",
+                        }));
+                      }}
+                      onFocus={() => setShowAreaDropdown(true)}
+                      placeholder="Search area..."
                       className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2
-    ${
-      errors.basic?.area_id
-        ? "border-red-300 focus:ring-red-500"
-        : "border-gray-300 focus:ring-blue-500"
-    }`}
-                      required
-                    >
-                      <option value="">Select</option>
-                      {areas.map((area) => (
-                        <option key={area.id} value={area.id}>
-                          {area.name_en}
-                        </option>
-                      ))}
-                    </select>
+      ${
+        errors.basic?.area_id
+          ? "border-red-300 focus:ring-red-500"
+          : "border-gray-300 focus:ring-blue-500"
+      }`}
+                    />
+
+                    {showAreaDropdown && filteredAreas.length > 0 && (
+                      <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-lg shadow-lg mt-1 max-h-60 overflow-y-auto">
+                        {filteredAreas.map((area) => (
+                          <div
+                            key={area.id}
+                            onClick={() => {
+                              setFormData((prev) => ({
+                                ...prev,
+                                area_id: area.id,
+                              }));
+
+                              setAreaSearch(area.name_en);
+                              setShowAreaDropdown(false);
+
+                              // Clear error
+                              setErrors((prev) => ({
+                                ...prev,
+                                basic: {
+                                  ...prev.basic,
+                                  area_id: false,
+                                },
+                              }));
+                            }}
+                            className="px-4 py-2 hover:bg-blue-50 cursor-pointer"
+                          >
+                            {area.name_en}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -580,20 +638,26 @@ export default function AddHotelPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Address (EN)
+                      Address (EN) *
                     </label>
                     <input
                       type="text"
                       name="address_en"
                       value={formData.address_en}
+                      required
                       onChange={handleChange}
                       placeholder="Enter address in English"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2
+    ${
+      errors.basic?.address_en
+        ? "border-red-300 focus:ring-red-500"
+        : "border-gray-300 focus:ring-blue-500"
+    }`}
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Address (AR)
+                      Address (AR) *
                     </label>
                     <input
                       type="text"
@@ -601,7 +665,12 @@ export default function AddHotelPage() {
                       value={formData.address_ar}
                       onChange={handleChange}
                       placeholder="Enter address in Arabic"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2
+    ${
+      errors.basic?.address_ar
+        ? "border-red-300 focus:ring-red-500"
+        : "border-gray-300 focus:ring-blue-500"
+    }`}
                       dir="rtl"
                     />
                   </div>
@@ -642,15 +711,21 @@ export default function AddHotelPage() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Thumbnail Image URL
+                      Thumbnail Image URL *
                     </label>
                     <input
                       type="url"
                       name="thumbnail_url"
                       value={formData.thumbnail_url}
+                      required
                       onChange={handleChange}
                       placeholder="https://example.com/image.jpg"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2
+    ${
+      errors.basic?.thumbnail_url
+        ? "border-red-300 focus:ring-red-500"
+        : "border-gray-300 focus:ring-blue-500"
+    }`}
                     />
                     <p className="text-xs text-gray-500 mt-1">
                       Optional: Enter a URL for the hotel thumbnail image
