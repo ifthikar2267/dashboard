@@ -392,11 +392,11 @@ export default function AddHotelPage() {
                   setActiveSection(section.id);
                 }}
                 className={`
-                  px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap
+                  px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap cursor-pointer
                   ${
                     activeSection === section.id
-                      ? "text-blue-600 border-blue-600"
-                      : "text-gray-600 hover:text-gray-900 hover:border-gray-300 border-transparent"
+                      ? "text-blue-600 border-blue-600 cursor-pointer"
+                      : "text-gray-600 hover:text-gray-900 hover:border-gray-300 border-transparent cursor-pointer"
                   }
                 `}
               >
@@ -473,7 +473,7 @@ export default function AddHotelPage() {
                       name="type_id"
                       value={formData.type_id}
                       onChange={handleChange}
-                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2
+                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 cursor-pointer
     ${
       errors.basic?.type_id
         ? "border-red-300 focus:ring-red-500"
@@ -497,7 +497,7 @@ export default function AddHotelPage() {
                       name="chain_id"
                       value={formData.chain_id}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
                     >
                       <option value="">Select</option>
                       {chains.map((chain) => (
@@ -527,7 +527,7 @@ export default function AddHotelPage() {
                       }}
                       onFocus={() => setShowAreaDropdown(true)}
                       placeholder="Search area..."
-                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2
+                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 cursor-pointer
       ${
         errors.basic?.area_id
           ? "border-red-300 focus:ring-red-500"
@@ -574,7 +574,7 @@ export default function AddHotelPage() {
                       name="star_rating"
                       value={formData.star_rating}
                       onChange={handleChange}
-                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2
+                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 cursor-pointer
     ${
       errors.basic?.star_rating
         ? "border-red-300 focus:ring-red-500"
@@ -622,7 +622,7 @@ export default function AddHotelPage() {
                       name="status"
                       value={formData.status}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
                     >
                       <option value="active">Active</option>
                       <option value="inactive">Inactive</option>
@@ -827,7 +827,7 @@ export default function AddHotelPage() {
             <button
               type="button"
               onClick={handleCancel}
-              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
               disabled={submitting}
             >
               Cancel
@@ -844,7 +844,7 @@ export default function AddHotelPage() {
                       setActiveSection(sections[currentIndex - 1].id);
                     }
                   }}
-                  className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
                   disabled={submitting}
                 >
                   Previous
@@ -876,14 +876,14 @@ export default function AddHotelPage() {
                       }
                     }
                   }}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
                 >
                   Next
                 </button>
               ) : (
                 <button
                   type="submit"
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 cursor-pointer"
                   disabled={submitting}
                 >
                   {submitting ? "Creating..." : "Create Hotel"}

@@ -31,7 +31,7 @@ export default function FAQSection({ faqs, onChange }) {
         <button
           type="button"
           onClick={handleAdd}
-          className="inline-flex items-center gap-1 px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="inline-flex items-center gap-1 px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
         >
           <Add fontSize="small" />
           Add FAQ

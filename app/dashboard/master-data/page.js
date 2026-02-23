@@ -259,10 +259,10 @@ export default function MasterDataPage() {
                   setActiveTab(tab.id);
                   setSearchTerm('');
                 }}
-                className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
+                className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors cursor-pointer${
                   activeTab === tab.id
-                    ? 'text-blue-600 border-blue-600'
-                    : 'text-gray-600 hover:text-gray-900 hover:border-gray-300 border-transparent'
+                    ? 'text-blue-600 border-blue-600 cursor-pointer'
+                    : 'text-gray-600 hover:text-gray-900 hover:border-gray-300 border-transparent cursor-pointer'
                 }`}
               >
                 {tab.label}
@@ -284,7 +284,7 @@ export default function MasterDataPage() {
             />
             <button
               onClick={handleAdd}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
             >
               + {getButtonLabel()}
             </button>
@@ -349,7 +349,7 @@ export default function MasterDataPage() {
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => handleEdit(item)}
-                              className="text-blue-600 hover:text-blue-900 transition-colors p-1"
+                              className="text-blue-600 hover:text-blue-900 transition-colors p-1 cursor-pointer"
                               title="Edit"
                               disabled={deleting === item.id}
                             >
@@ -357,7 +357,7 @@ export default function MasterDataPage() {
                             </button>
                             <button
                               onClick={() => handleDelete(item.id)}
-                              className="text-red-600 hover:text-red-900 transition-colors p-1 disabled:opacity-50"
+                              className="text-red-600 hover:text-red-900 transition-colors p-1 disabled:opacity-50 cursor-pointer"
                               title="Delete"
                               disabled={deleting === item.id}
                             >

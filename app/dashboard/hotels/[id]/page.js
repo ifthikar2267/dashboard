@@ -160,7 +160,7 @@ export default function ViewHotelPage() {
               )}
               {hotel.description_ar && (
                 <div>
-                  <p className="text-sm font-medium text-gray-700 mb-1">Arabic</p>
+                  <p className="text-sm font-medium text-gray-700 mb-1" dir='rtl'>عربي</p>
                   <p className="text-gray-600" dir="rtl">{hotel.description_ar}</p>
                 </div>
               )}

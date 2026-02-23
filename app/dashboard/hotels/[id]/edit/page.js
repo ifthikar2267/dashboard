@@ -309,7 +309,7 @@ export default function EditHotelPage() {
                     name="type_id"
                     value={formData.type_id}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
                     required
                   >
                     <option value="">Select type</option>
@@ -328,7 +328,7 @@ export default function EditHotelPage() {
                     name="chain_id"
                     value={formData.chain_id}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
                   >
                     <option value="">Select chain (optional)</option>
                     {chains.map(chain => (
@@ -346,7 +346,7 @@ export default function EditHotelPage() {
                     name="area_id"
                     value={formData.area_id}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
                     required
                   >
                     <option value="">Select area</option>
@@ -365,7 +365,7 @@ export default function EditHotelPage() {
                     name="star_rating"
                     value={formData.star_rating}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
                   >
                     <option value="">Select rating</option>
                     <option value="1">1 Star</option>
@@ -396,7 +396,7 @@ export default function EditHotelPage() {
                     name="status"
                     value={formData.status}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
                   >
                     <option value="active">Active</option>
                     <option value="inactive">Inactive</option>
