@@ -175,7 +175,7 @@ export default function HotelsPage() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {currentHotels.length > 0 ? (
                   currentHotels.map((hotel) => (
-                    <tr key={hotel.id} className="hover:bg-gray-50 transition-colors">
+                    <tr key={hotel.id}  onClick={() => handleView(hotel.id)} style={{cursor: "pointer"}} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-3">
                           {/* Hotel Image - prioritize thumbnail_url, then image_url */}
@@ -210,7 +210,7 @@ export default function HotelsPage() {
                           {hotel.area?.name_en || 'N/A'}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-6 py-4 whitespace-nowrap text-center">
                         <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
                           {hotel.type?.name_en || 'N/A'}
                         </span>
@@ -239,23 +239,23 @@ export default function HotelsPage() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex items-center gap-2">
                           <button
-                            onClick={() => handleView(hotel.id)}
-                            className="text-blue-600 hover:text-blue-900 transition-colors p-1"
+                            onClick={(e) => {  e.stopPropagation(); handleView(hotel.id);}}
+                            className="text-blue-600 hover:text-blue-900 transition-colors p-1 cursor-pointer"
                             title="View"
                           >
                             <Visibility fontSize="small" />
                           </button>
                           <button
-                            onClick={() => handleEdit(hotel.id)}
-                            className="text-green-600 hover:text-green-900 transition-colors p-1"
+                            onClick={(e) => {  e.stopPropagation(); handleEdit(hotel.id);}}
+                            className="text-green-600 hover:text-green-900 transition-colors p-1 cursor-pointer"
                             title="Edit"
                             disabled={deleting === hotel.id}
                           >
                             <Edit fontSize="small" />
                           </button>
                           <button
-                            onClick={() => handleDelete(hotel.id)}
-                            className="text-red-600 hover:text-red-900 transition-colors p-1 disabled:opacity-50"
+                            onClick={(e) => {  e.stopPropagation(); handleDelete(hotel.id)}}
+                            className="text-red-600 hover:text-red-900 transition-colors p-1 disabled:opacity-50 cursor-pointer"
                             title="Delete"
                             disabled={deleting === hotel.id}
                           >
@@ -299,7 +299,7 @@ export default function HotelsPage() {
                 <button
                   onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-4 py-2 border border-gray-300 cursor-pointer rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   Previous
                 </button>
@@ -308,7 +308,7 @@ export default function HotelsPage() {
                     <button
                       key={index + 1}
                       onClick={() => setCurrentPage(index + 1)}
-                      className={`px-3 py-2 border rounded-md text-sm font-medium transition-colors ${
+                      className={`px-3 py-2 border rounded-md text-sm font-medium cursor-pointer transition-colors ${
                         currentPage === index + 1
                           ? 'bg-blue-600 text-white border-blue-600'
                           : 'border-gray-300 text-gray-700 hover:bg-gray-50'
@@ -323,7 +323,7 @@ export default function HotelsPage() {
                     setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                   }
                   disabled={currentPage === totalPages}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-4 py-2 border border-gray-300 cursor-pointer rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   Next
                 </button>
