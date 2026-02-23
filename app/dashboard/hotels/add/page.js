@@ -111,7 +111,7 @@ export default function AddHotelPage() {
       [name]: value,
     }));
 
-    // 🔥 Clear error for that specific field when user types
+    // Clear error for that specific field when user types
     if (errors.basic?.[name]) {
       setErrors((prev) => ({
         ...prev,
@@ -311,7 +311,7 @@ export default function AddHotelPage() {
 
       if (reviewAggregates.length > 0 && hotel?.id) {
         const validReviews = reviewAggregates.filter(
-          (r) => r && String(r.source || "").trim() !== "",
+          (r) => r && r.average_rating !== undefined && r.average_rating !== null
         );
         if (validReviews.length > 0) {
           const { error: reviewsError } = await saveHotelReviewAggregates(
