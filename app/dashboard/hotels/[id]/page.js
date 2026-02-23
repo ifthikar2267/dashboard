@@ -112,7 +112,7 @@ export default function ViewHotelPage() {
         <div className="flex items-center gap-4">
           <button
             onClick={() => router.push('/dashboard/hotels')}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
           >
             <ArrowBack />
           </button>
@@ -123,7 +123,7 @@ export default function ViewHotelPage() {
         </div>
         <button
           onClick={() => router.push(`/dashboard/hotels/${params.id}/edit`)}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
         >
           <Edit fontSize="small" />
           Edit Hotel
