@@ -1,15 +1,23 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter, useParams } from 'next/navigation';
-import toast, { Toaster } from 'react-hot-toast';
-import { getHotelComplete, updateHotelComplete } from '@/lib/services/hotels.service';
-import { getTypes, getChains, getAreas } from '@/lib/services/masterData.service';
-import { ArrowBack } from '@mui/icons-material';
-import AmenitiesSection from '@/components/hotels/AmenitiesSection';
-import RoomsSection from '@/components/hotels/RoomsSection';
-import ImageUrlInput from '@/components/hotels/ImageUrlInput';
-import ReviewAggregatesSection from '@/components/hotels/ReviewAggregatesSection';
+import { useState, useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
+import {
+  getHotelComplete,
+  updateHotelComplete,
+} from "@/lib/services/hotels.service";
+import {
+  getTypes,
+  getChains,
+  getAreas,
+} from "@/lib/services/masterData.service";
+import { ArrowBack } from "@mui/icons-material";
+import AmenitiesSection from "@/components/hotels/AmenitiesSection";
+import RoomsSection from "@/components/hotels/RoomsSection";
+import ImageUrlInput from "@/components/hotels/ImageUrlInput";
+import ReviewAggregatesSection from "@/components/hotels/ReviewAggregatesSection";
+import FAQSection from "@/components/hotels/FAQSection";
 
 export default function EditHotelPage() {
   const router = useRouter();
@@ -20,19 +28,19 @@ export default function EditHotelPage() {
 
   // Form data
   const [formData, setFormData] = useState({
-    name_en: '',
-    name_ar: '',
-    type_id: '',
-    chain_id: '',
-    area_id: '',
-    address_en: '',
-    address_ar: '',
-    star_rating: '',
+    name_en: "",
+    name_ar: "",
+    type_id: "",
+    chain_id: "",
+    area_id: "",
+    address_en: "",
+    address_ar: "",
+    star_rating: "",
     rank: 0,
-    description_en: '',
-    description_ar: '',
-    thumbnail_url: '',
-    status: 'active',
+    description_en: "",
+    description_ar: "",
+    thumbnail_url: "",
+    status: "active",
   });
 
   // Related data
@@ -40,6 +48,7 @@ export default function EditHotelPage() {
   const [rooms, setRooms] = useState([]);
   const [imageUrls, setImageUrls] = useState([]);
   const [reviewAggregates, setReviewAggregates] = useState([]);
+  const [faqs, setFAQs] = useState([]);
 
   // Master data
   const [types, setTypes] = useState([]);
@@ -53,14 +62,15 @@ export default function EditHotelPage() {
   const loadData = async () => {
     try {
       setLoading(true);
-      
+
       // Load master data and hotel in parallel
-      const [typesResult, chainsResult, areasResult, hotelResult] = await Promise.all([
-        getTypes(true),
-        getChains(true),
-        getAreas(true),
-        getHotelComplete(params.id),
-      ]);
+      const [typesResult, chainsResult, areasResult, hotelResult] =
+        await Promise.all([
+          getTypes(true),
+          getChains(true),
+          getAreas(true),
+          getHotelComplete(params.id),
+        ]);
 
       setTypes(typesResult.data || []);
       setChains(chainsResult.data || []);
@@ -68,35 +78,40 @@ export default function EditHotelPage() {
 
       if (hotelResult.error || !hotelResult.data) {
         setNotFound(true);
-        toast.error('Hotel not found');
+        toast.error("Hotel not found");
       } else {
         const hotel = hotelResult.data;
-        
+
         // Populate form with existing data
         setFormData({
-          name_en: hotel.name_en || '',
-          name_ar: hotel.name_ar || '',
-          type_id: hotel.type_id || '',
-          chain_id: hotel.chain_id || '',
-          area_id: hotel.area_id || '',
-          address_en: hotel.address_en || '',
-          address_ar: hotel.address_ar || '',
-          star_rating: hotel.star_rating || '',
+          name_en: hotel.name_en || "",
+          name_ar: hotel.name_ar || "",
+          type_id: hotel.type_id || "",
+          chain_id: hotel.chain_id || "",
+          area_id: hotel.area_id || "",
+          address_en: hotel.address_en || "",
+          address_ar: hotel.address_ar || "",
+          star_rating: hotel.star_rating || "",
           rank: hotel.rank || 0,
-          description_en: hotel.description_en || '',
-          description_ar: hotel.description_ar || '',
-          thumbnail_url: hotel.thumbnail_url || '',
-          status: hotel.status || 'active',
+          description_en: hotel.description_en || "",
+          description_ar: hotel.description_ar || "",
+          thumbnail_url: hotel.thumbnail_url || "",
+          status: hotel.status || "active",
         });
 
         // Load related data
         setAmenities(hotel.amenities || []);
         setRooms(hotel.rooms || []);
-        
+
         // Load images from images JSONB column or image_url
         const images = [];
         if (hotel.images && Array.isArray(hotel.images)) {
-          images.push(...hotel.images);
+          // hotel.images may be an array of objects ({ url, isPrimary, sortOrder }) or plain strings
+          images.push(
+            ...hotel.images
+              .map((img) => (typeof img === "string" ? img : img?.url || ""))
+              .filter(Boolean),
+          );
         } else if (hotel.image_url) {
           images.push(hotel.image_url);
         }
@@ -104,14 +119,23 @@ export default function EditHotelPage() {
 
         const aggregates = (hotel.review_aggregates || []).map((r) => ({
           id: r.id,
-          average_rating: r.average_rating ?? '',
-          total_reviews: r.total_reviews ?? '',
+          average_rating: r.average_rating ?? "",
+          total_reviews: r.total_reviews ?? "",
         }));
         setReviewAggregates(aggregates);
+
+        const faqRows = (hotel.faqs || []).map((f) => ({
+          id: f.id,
+          question_en: f.question_en || "",
+          question_ar: f.question_ar || "",
+          answer_en: f.answer_en || "",
+          answer_ar: f.answer_ar || "",
+        }));
+        setFAQs(faqRows);
       }
     } catch (err) {
-      console.error('Error loading data:', err);
-      toast.error('Failed to load hotel data');
+      console.error("Error loading data:", err);
+      toast.error("Failed to load hotel data");
       setNotFound(true);
     } finally {
       setLoading(false);
@@ -120,20 +144,20 @@ export default function EditHotelPage() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const validateForm = () => {
     if (!formData.name_en || !formData.name_ar) {
-      toast.error('Please fill in hotel name in both languages');
+      toast.error("Please fill in hotel name in both languages");
       return false;
     }
 
     if (!formData.type_id || !formData.area_id) {
-      toast.error('Please select type and area');
+      toast.error("Please select type and area");
       return false;
     }
 
@@ -148,7 +172,7 @@ export default function EditHotelPage() {
     }
 
     setSubmitting(true);
-    
+
     try {
       // Convert string values to numbers for foreign keys
       const hotelData = {
@@ -156,7 +180,9 @@ export default function EditHotelPage() {
         type_id: parseInt(formData.type_id),
         chain_id: formData.chain_id ? parseInt(formData.chain_id) : null,
         area_id: parseInt(formData.area_id),
-        star_rating: formData.star_rating ? parseInt(formData.star_rating) : null,
+        star_rating: formData.star_rating
+          ? parseInt(formData.star_rating)
+          : null,
         rank: parseInt(formData.rank) || 0,
       };
 
@@ -164,33 +190,41 @@ export default function EditHotelPage() {
         amenities,
         rooms,
         imageUrls,
+        faqs,
         reviewAggregates,
       };
 
-      console.log('Updating hotel with complete data:', { hotelData, relatedData });
+      console.log("Updating hotel with complete data:", {
+        hotelData,
+        relatedData,
+      });
 
-      const { data, error } = await updateHotelComplete(params.id, hotelData, relatedData);
+      const { data, error } = await updateHotelComplete(
+        params.id,
+        hotelData,
+        relatedData,
+      );
 
       if (error) {
-        toast.error('Failed to update hotel: ' + error);
+        toast.error("Failed to update hotel: " + error);
         setSubmitting(false);
         return;
       }
 
-      toast.success('Hotel updated successfully with all related data!');
-      
+      toast.success("Hotel updated successfully with all related data!");
+
       setTimeout(() => {
-        router.push('/dashboard/hotels');
+        router.push("/dashboard/hotels");
       }, 1000);
     } catch (err) {
-      console.error('Error updating hotel:', err);
-      toast.error('Failed to update hotel');
+      console.error("Error updating hotel:", err);
+      toast.error("Failed to update hotel");
       setSubmitting(false);
     }
   };
 
   const handleCancel = () => {
-    router.push('/dashboard/hotels');
+    router.push("/dashboard/hotels");
   };
 
   if (loading) {
@@ -211,18 +245,22 @@ export default function EditHotelPage() {
     return (
       <div className="space-y-6">
         <Toaster position="top-right" />
-        
+
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
-              onClick={() => router.push('/dashboard/hotels')}
+              onClick={() => router.push("/dashboard/hotels")}
               className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >
               <ArrowBack />
             </button>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Hotel Not Found</h1>
-              <p className="text-gray-600 mt-1">Cannot edit a hotel that doesn't exist</p>
+              <h1 className="text-2xl font-bold text-gray-900">
+                Hotel Not Found
+              </h1>
+              <p className="text-gray-600 mt-1">
+                Cannot edit a hotel that doesn't exist
+              </p>
             </div>
           </div>
         </div>
@@ -230,12 +268,14 @@ export default function EditHotelPage() {
         <div className="bg-white rounded-lg shadow p-12">
           <div className="text-center">
             <div className="text-6xl mb-4">🏨</div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">Hotel Not Found</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">
+              Hotel Not Found
+            </h2>
             <p className="text-gray-600 mb-6">
               The hotel you're trying to edit doesn't exist or has been deleted.
             </p>
             <button
-              onClick={() => router.push('/dashboard/hotels')}
+              onClick={() => router.push("/dashboard/hotels")}
               className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               Back to Hotels List
@@ -249,11 +289,11 @@ export default function EditHotelPage() {
   return (
     <div className="space-y-6">
       <Toaster position="top-right" />
-      
+
       {/* Header */}
       <div className="flex items-center gap-4">
         <button
-          onClick={() => router.push('/dashboard/hotels')}
+          onClick={() => router.push("/dashboard/hotels")}
           className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
         >
           <ArrowBack />
@@ -270,7 +310,9 @@ export default function EditHotelPage() {
           <div className="space-y-6">
             {/* Basic Information */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">General Infor</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                General Infor
+              </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -305,7 +347,7 @@ export default function EditHotelPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Type *
                   </label>
-                  <select 
+                  <select
                     name="type_id"
                     value={formData.type_id}
                     onChange={handleChange}
@@ -313,7 +355,7 @@ export default function EditHotelPage() {
                     required
                   >
                     <option value="">Select type</option>
-                    {types.map(type => (
+                    {types.map((type) => (
                       <option key={type.id} value={type.id}>
                         {type.name_en}
                       </option>
@@ -324,14 +366,14 @@ export default function EditHotelPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Chain
                   </label>
-                  <select 
+                  <select
                     name="chain_id"
                     value={formData.chain_id}
                     onChange={handleChange}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
                   >
                     <option value="">Select chain (optional)</option>
-                    {chains.map(chain => (
+                    {chains.map((chain) => (
                       <option key={chain.id} value={chain.id}>
                         {chain.name_en}
                       </option>
@@ -342,7 +384,7 @@ export default function EditHotelPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Area *
                   </label>
-                  <select 
+                  <select
                     name="area_id"
                     value={formData.area_id}
                     onChange={handleChange}
@@ -350,7 +392,7 @@ export default function EditHotelPage() {
                     required
                   >
                     <option value="">Select area</option>
-                    {areas.map(area => (
+                    {areas.map((area) => (
                       <option key={area.id} value={area.id}>
                         {area.name_en}
                       </option>
@@ -361,7 +403,7 @@ export default function EditHotelPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Star Rating
                   </label>
-                  <select 
+                  <select
                     name="star_rating"
                     value={formData.star_rating}
                     onChange={handleChange}
@@ -392,7 +434,7 @@ export default function EditHotelPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Status
                   </label>
-                  <select 
+                  <select
                     name="status"
                     value={formData.status}
                     onChange={handleChange}
@@ -407,7 +449,9 @@ export default function EditHotelPage() {
 
             {/* Address */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Address</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                Address
+              </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -441,7 +485,9 @@ export default function EditHotelPage() {
 
             {/* Description */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Description</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                Description
+              </h2>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -487,16 +533,19 @@ export default function EditHotelPage() {
                   </p>
                   {formData.thumbnail_url && (
                     <div className="mt-3">
-                      <p className="text-xs font-medium text-gray-700 mb-2">Preview:</p>
+                      <p className="text-xs font-medium text-gray-700 mb-2">
+                        Preview:
+                      </p>
                       <div className="w-32 h-20 rounded-lg overflow-hidden border border-gray-200">
                         <img
                           src={formData.thumbnail_url}
                           alt="Thumbnail preview"
                           className="w-full h-full object-cover"
                           onError={(e) => {
-                            e.target.src = '';
-                            e.target.alt = 'Invalid image URL';
-                            e.target.className = 'w-full h-full flex items-center justify-center text-xs text-gray-400';
+                            e.target.src = "";
+                            e.target.alt = "Invalid image URL";
+                            e.target.className =
+                              "w-full h-full flex items-center justify-center text-xs text-gray-400";
                           }}
                         />
                       </div>
@@ -508,25 +557,54 @@ export default function EditHotelPage() {
 
             {/* Images Section */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Images</h2>
-              <ImageUrlInput 
-                urls={imageUrls} 
-                onChange={setImageUrls}
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                Images
+              </h2>
+              <ImageUrlInput
+                urls={(Array.isArray(imageUrls) ? imageUrls : [])
+                  .map((img) => (typeof img === "string" ? img : img.url))
+                  .filter(Boolean)}
+                onChange={(newUrls) => {
+                  // Normalize newUrls: ensure each is an object with url + optional metadata
+                  const normalized = newUrls.map((u, i) => {
+                    const existing = imageUrls[i] || {};
+                    return typeof u === "string"
+                      ? {
+                          url: u,
+                          isPrimary: existing.isPrimary || false,
+                          sortOrder: existing.sortOrder || i,
+                        }
+                      : u;
+                  });
+                  setImageUrls(normalized);
+                }}
               />
             </div>
 
             {/* Amenities Section */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Amenities</h2>
-              <AmenitiesSection 
-                selectedAmenities={amenities} 
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                Amenities
+              </h2>
+              <AmenitiesSection
+                selectedAmenities={amenities}
                 onChange={setAmenities}
               />
             </div>
 
+            {/* FAQ Section */}
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                Frequently Asked Questions
+              </h2>
+              <FAQSection faqs={faqs} onChange={setFAQs} />
+            </div>
+
             {/* Reviews Section */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Reviews</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                Reviews
+              </h2>
               <ReviewAggregatesSection
                 reviews={reviewAggregates}
                 onChange={setReviewAggregates}
@@ -535,30 +613,29 @@ export default function EditHotelPage() {
 
             {/* Rooms Section */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Rooms & Pricing</h2>
-              <RoomsSection 
-                rooms={rooms} 
-                onChange={setRooms}
-              />
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                Rooms & Pricing
+              </h2>
+              <RoomsSection rooms={rooms} onChange={setRooms} />
             </div>
           </div>
 
           {/* Form Actions */}
           <div className="mt-8 flex items-center justify-between pt-6 border-t border-gray-200">
-            <button 
+            <button
               type="button"
               onClick={handleCancel}
-              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
               disabled={submitting}
             >
               Cancel
             </button>
-            <button 
+            <button
               type="submit"
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 cursor-pointer"
               disabled={submitting}
             >
-              {submitting ? 'Updating...' : 'Update Hotel'}
+              {submitting ? "Updating..." : "Update Hotel"}
             </button>
           </div>
         </form>
