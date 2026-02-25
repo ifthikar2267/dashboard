@@ -47,7 +47,7 @@ export default function FAQSection({ faqs, onChange }) {
               <button
                 type="button"
                 onClick={() => handleRemove(index)}
-                className="absolute top-2 right-2 text-red-600 hover:text-red-700 p-1"
+                className="absolute top-2 right-2 text-red-600 hover:text-red-700 p-1 cursor-pointer"
                 title="Remove FAQ"
               >
                 <Delete fontSize="small" />

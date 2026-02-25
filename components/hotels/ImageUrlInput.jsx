@@ -1,12 +1,27 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from "react";
 import { Add, Delete, Image as ImageIcon } from '@mui/icons-material';
 import toast from 'react-hot-toast';
 
-export default function ImageUrlInput({ imageUrls = [], onChange }) {
-  const [urls, setUrls] = useState(imageUrls);
+function normalizeToUrlStrings(value) {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => {
+      if (typeof item === 'string') return item;
+      if (item && typeof item === 'object' && typeof item.url === 'string') return item.url;
+      return '';
+    })
+    .filter(Boolean);
+}
+
+export default function ImageUrlInput({ urls = [], onChange }) {
+  const [localUrls, setLocalUrls] = useState(normalizeToUrlStrings(urls));
   const [newUrl, setNewUrl] = useState('');
+
+  useEffect(() => {
+    setLocalUrls(normalizeToUrlStrings(urls));
+  }, [urls]);
 
   const isValidUrl = (url) => {
     try {
@@ -28,16 +43,16 @@ export default function ImageUrlInput({ imageUrls = [], onChange }) {
       return;
     }
 
-    const updatedUrls = [...urls, newUrl.trim()];
-    setUrls(updatedUrls);
+    const updatedUrls = [...localUrls, newUrl.trim()];
+    setLocalUrls(updatedUrls);
     onChange(updatedUrls);
     setNewUrl('');
     toast.success('Image URL added');
   };
 
   const handleRemoveUrl = (index) => {
-    const updatedUrls = urls.filter((_, i) => i !== index);
-    setUrls(updatedUrls);
+    const updatedUrls = localUrls.filter((_, i) => i !== index);
+    setLocalUrls(updatedUrls);
     onChange(updatedUrls);
     toast.success('Image URL removed');
   };
@@ -80,13 +95,13 @@ export default function ImageUrlInput({ imageUrls = [], onChange }) {
       </div>
 
       {/* Image URL List */}
-      {urls.length > 0 && (
+      {localUrls.length > 0 && (
         <div className="space-y-3">
           <label className="block text-sm font-medium text-gray-700">
-            Image URLs ({urls.length})
+            Image URLs ({localUrls.length})
           </label>
           <div className="space-y-2 max-h-96 overflow-y-auto">
-            {urls.map((url, index) => (
+            {localUrls.map((url, index) => (
               <div
                 key={index}
                 className="flex items-start gap-3 p-3 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors"
@@ -125,7 +140,7 @@ export default function ImageUrlInput({ imageUrls = [], onChange }) {
                 <button
                   type="button"
                   onClick={() => handleRemoveUrl(index)}
-                  className="flex-shrink-0 p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
+                  className="flex-shrink-0 p-2 text-red-600 hover:bg-red-50 rounded transition-colors cursor-pointer"
                   title="Remove"
                 >
                   <Delete fontSize="small" />
@@ -137,7 +152,7 @@ export default function ImageUrlInput({ imageUrls = [], onChange }) {
       )}
 
       {/* Empty State */}
-      {urls.length === 0 && (
+      {localUrls.length === 0 && (
         <div className="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
           <ImageIcon className="mx-auto text-gray-400 mb-2" style={{ fontSize: 48 }} />
           <p className="text-sm text-gray-500">No images added yet</p>
