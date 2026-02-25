@@ -17,7 +17,8 @@ export async function GET() {
           *,
           room_packages (*)
         ),
-        review_aggregates (*)
+        review_aggregates (*),
+        hotel_faqs (*)
       `);
 
     if (error) throw error;
