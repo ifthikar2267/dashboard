@@ -27,7 +27,8 @@ export async function GET(request, context) {
           *,
           room_packages (*)
         ),
-        review_aggregates (*)
+        review_aggregates (*),
+        hotel_faqs (*)
       `)
       .eq('id', id)
       .single();
