@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Add, Delete } from '@mui/icons-material';
 import { getAmenities } from '@/lib/services/masterData.service';
 
 export default function AmenitiesSection({ selectedAmenities = [], onChange }) {

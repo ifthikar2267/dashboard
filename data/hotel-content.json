@@ -1,0 +1,360 @@
+{
+  "hotels": [
+    {
+        "hotelId": 8,
+      "sectionsMap": {
+        "attractions": [
+          "Distances are displayed to the nearest 0.1 mile and kilometer.\nDubai Water Canal - 0.5 km / 0.3 mi\nKidZania - 1.8 km / 1.1 mi\nDubai Mall - 1.9 km / 1.2 mi\nSouk al Bahar - 2 km / 1.2 mi\nDubai Fountain - 2 km / 1.2 mi\nDubai Aquarium & Underwater Zoo - 2.4 km / 1.5 mi\nBurj Khalifa - 2.7 km / 1.7 mi\nDubai Opera - 3 km / 1.9 mi\nEmaar Square - 3.2 km / 2 mi\nCoca-Cola Arena - 4.4 km / 2.7 mi\nCity Walk - 4.8 km / 3 mi\nDubai Water Canal Waterfall - 5 km / 3.1 mi\nDubai World Trade Centre - 6.5 km / 4 mi\nMuseum of the Future - 6.5 km / 4 mi\nMercato Shopping Mall - 7.5 km / 4.6 mi",
+          "Dubai Intl. Airport (DXB) - 12.9 km / 8 mi\nSharjah (SHJ-Sharjah Intl.) - 37.3 km / 23.2 mi\nAl Maktoum Intl. Airport (DWC) - 51.6 km / 32 mi"
+
+        ],
+        "policy": [
+          "Check-in: From 03:00 pm\nIn case of late Check-in please contact Almosafer or the property directly to avoid cancellation\nCheck-out: Until 12:00 pm",
+          "Extra-person charges may apply and vary depending on property policy\nGovernment-issued photo identification and a credit card, debit card, or cash deposit may be required at check-in for incidental charges\nSpecial requests are subject to availability upon check-in and may incur additional charges; special requests cannot be guaranteed\nThis property accepts credit cards and cash",
+          "Safety features at this property include a carbon monoxide detector, a fire extinguisher, a smoke detector, a security system, and a first aid kit",
+          "This property offers transfers from the airport (surcharges may apply). Guests must contact the property with arrival details before travel using the contact information on the booking confirmation. Front desk staff will greet guests on arrival at the property."
+        ],
+        "important": [
+          "Only registered guests are allowed in the guestrooms.\nConnecting/adjoining rooms are subject to availability.\nNo pets and no service animals are allowed at this property.\nContactless check-in and contactless check-out are available."
+        ],
+        "fees": [
+          "Mandatory fees:\nDeposit: 500 per accommodation, per stay\nCity tax: 20.00 per accommodation, per night\nTourism fee: 20.00 for the first bedroom per night, increasing by 20.00 per additional bedroom\nAll charges provided by the property are included.",
+          "Optional fees:\nAirport shuttle fee: 300 per vehicle (one-way, maximum occupancy 2)\nAirport shuttle fee per child: 300 (one-way)\nRollaway bed fee: 250.0 per day"
+        ]
+      }
+    },
+
+    {
+      "hotelId": 9,
+      "sectionsMap": {
+        "attractions": [
+          "Distances are displayed to the nearest 0.1 mile and kilometer.\nDubai Water Canal - 0.6 km / 0.4 mi\nSafa Park - 4.6 km / 2.8 mi\nDubai Water Canal Waterfall - 4.9 km / 3 mi",
+          "KidZania - 2.2 km / 1.4 mi\nDubai Fountain - 2.2 km / 1.4 mi\nSouk al Bahar - 2.6 km / 1.6 mi\nDubai Mall - 2.6 km / 1.6 mi",
+          "Dubai Aquarium & Underwater Zoo - 3.3 km / 2.1 mi\nDubai Opera - 3.5 km / 2.2 mi\nEmaar Square - 3.7 km / 2.3 mi\nBurj Khalifa - 4 km / 2.5 mi",
+          "City Walk - 4.8 km / 3 mi\nCoca-Cola Arena - 5.5 km / 3.4 mi\nDubai World Trade Centre - 5.6 km / 3.5 mi\nMuseum of the Future - 5.6 km / 3.5 mi",
+          "Nearest airports:\nDubai Intl. Airport (DXB) - 14.1 km / 8.7 mi\nSharjah (SHJ-Sharjah Intl.) - 39.1 km / 24.3 mi\nAl Maktoum Intl. Airport (DWC) - 50.7 km / 31.5 mi\nPreferred airport: Dubai Intl. Airport (DXB)"
+        ],
+        "policy": [
+          "Check-in: From 03:00 pm\nLate check-in requires contacting Almosafer or the property to avoid cancellation\nCheck-out: Until 11:00 am",
+          "Extra-person charges may apply and vary depending on property policy\nGovernment-issued photo ID and a credit card, debit card, or cash deposit may be required at check-in\nSpecial requests are subject to availability and may incur additional charges\nGuests must contact the property in advance to reserve a high chair",
+          "This property accepts credit cards, debit cards, and cash\nOutdoor spaces such as balconies, patios, or terraces may not be suitable for children",
+          "Guests will receive an email within 48 hours before arrival with check-in instructions\nFront desk staff will greet guests on arrival"
+        ],
+        "important": [
+          "Pool access: 9:00 AM – 7:00 PM\nMassage reservations required prior to arrival\nChildren stay free using existing bedding\nOnly registered guests allowed in guestrooms\nConnecting rooms subject to availability\nPets allowed with surcharge (see Fees section)"
+        ],
+        "fees": [
+          "Mandatory fees:\nDeposit: 300 per accommodation, per day\nCity tax: 20.00 per accommodation, per night\nTourism fee: 20.00 for the first bedroom per night, increasing by 20.00 per additional bedroom\nAll charges provided by the property are included.",
+          "Optional fees:\nContinental breakfast: approximately 120 per person\nPet fee: 500 per stay (up to 14 days)\nEarly check-in: available for a fee (subject to availability)\nLate check-out: available for a fee (subject to availability)\nFees and deposits may not include tax and are subject to change."
+        ]
+      }
+    },
+
+     {
+      "hotelId": 10,
+      "sectionsMap": {
+        "attractions": [
+          "Distances are displayed to the nearest 0.1 mile and kilometer.\nThe Beach Mall - 0.1 km / 0.1 mi\nThe Walk - 0.1 km / 0.1 mi\nMarina Beach - 0.4 km / 0.2 mi\nBluewaters Island - 1.4 km / 0.9 mi\nAin Dubai - 1.5 km / 1 mi",
+          "Dubai Marina Mall - 1.7 km / 1 mi\nThrill Zone - 1.7 km / 1.1 mi\nCaesars Forum - 1.9 km / 1.2 mi\nMohammad Bin Ahmed Al Mulla Mosque - 1.9 km / 1.2 mi\nSkydive Dubai - 2.5 km / 1.5 mi",
+          "Marina 101 - 2.9 km / 1.8 mi\nAmerican University of Dubai (AUD) - 3.6 km / 2.3 mi\nDubai Harbour Viewpoint - 4.5 km / 2.8 mi\nIbn Battuta Mall - 4.6 km / 2.9 mi\nDubai College - 6.4 km / 4 mi",
+          "Nearest airports:\nAl Maktoum Intl. Airport (DWC) - 36 km / 22.4 mi\nDubai Intl. Airport (DXB) - 35.2 km / 21.9 mi\nSharjah (SHJ-Sharjah Intl.) - 62.6 km / 38.9 mi\nPreferred airport: Dubai Intl. Airport (DXB)"
+        ],
+        "policy": [
+          "Check-in: From 03:00 pm\nLate check-in requires contacting Almosafer or the property to avoid cancellation\nCheck-out: Until 12:00 pm",
+          "Extra-person charges may apply and vary depending on property policy\nGovernment-issued photo ID and a credit/debit card or cash deposit may be required at check-in\nSpecial requests are subject to availability and may incur additional charges",
+          "This property accepts credit cards, debit cards, and cash\nProperty may pre-authorize credit card before arrival\nCashless transactions available",
+          "Property uses grey water recycling and eco-friendly cleaning products\nSafety features include fire extinguisher, smoke detector, security system, and first aid kit",
+          "Outdoor spaces such as balconies, patios, and terraces may not be suitable for children\nAuthorization for first night room and tax may be placed if payment is on-site"
+        ],
+        "important": [
+          "Pool access: 10:00 AM – 6:00 PM\nOne child 11 years or younger stays free using existing bedding\nOnly registered guests allowed in guestrooms\nConnecting rooms subject to availability\nNo pets and no service animals allowed\nCar recommended for transportation\nCashless payment methods available"
+        ],
+        "fees": [
+          "Mandatory fees:\nCity tax: 20.00 per accommodation, per night\nTourism fee: 20.00 for the first bedroom per night, increasing by 20.00 per additional bedroom\nAll charges provided by the property are included.",
+          "Optional fees:\nBuffet breakfast: approximately 90 for adults and 45 for children\nRollaway bed: 250.0 per day\nFees and deposits may not include tax and are subject to change."
+        ]
+      }
+    }, 
+
+    {
+      "hotelId": 11,
+      "sectionsMap": {
+        "attractions": [
+          "Distances are displayed to the nearest 0.1 mile and kilometer.\nDubai Mall - 0.1 km / 0.1 mi\nDubai Aquarium & Underwater Zoo - 0.3 km / 0.2 mi\nEmaar Square - 0.9 km / 0.5 mi\nKidZania - 0.9 km / 0.6 mi\nBurj Khalifa - 1 km / 0.6 mi",
+          "Dubai Opera - 1.1 km / 0.7 mi\nSouk al Bahar - 1.3 km / 0.8 mi\nDubai Fountain - 1.4 km / 0.8 mi\nDubai Water Canal - 1.9 km / 1.2 mi",
+          "Coca-Cola Arena - 2.2 km / 1.4 mi\nCity Walk - 2.8 km / 1.8 mi\nMuseum of the Future - 2.9 km / 1.8 mi\nDubai World Trade Centre - 3.3 km / 2 mi\nDubai Water Canal Waterfall - 3.5 km / 2.2 mi\nDubai International Convention and Exhibition Centre - 3.8 km / 2.4 mi",
+          "Nearest airports:\nDubai Intl. Airport (DXB) - 18.1 km / 11.2 mi\nSharjah (SHJ-Sharjah Intl.) - 38.3 km / 23.8 mi\nAl Maktoum Intl. Airport (DWC) - 52.4 km / 32.6 mi"
+        ],
+        "policy": [
+          "Check-in: From 03:00 pm\nLate check-in please contact property at least 24 hours before arrival\nCheck-out: Until 12:00 pm",
+          "Extra-person charges may apply\nGovernment-issued ID and credit card/debit card/cash deposit may be required at check-in\nSpecial requests subject to availability and may incur additional charges\nName on credit card must match reservation",
+          "This property accepts credit cards, debit cards, and cash\nProperty professionally cleaned\nHost may not provide smoke or carbon monoxide detectors",
+          "Guests must contact property in advance for check-in instructions\nHost will greet guests on arrival"
+        ],
+        "important": [
+          "Pool access: 6:00 AM – 7:00 PM\nContactless check-in and check-out available\nProperty professionally cleaned\nOnly registered guests allowed in guestrooms"
+        ],
+        "fees": [
+          "Mandatory fees:\nCity tax: 10.00 per accommodation per night\nTourism fee: 10.00 for the first bedroom per night increasing by 10.00 per additional bedroom\nAll charges provided by the property are included.",
+          "Optional fees:\nValet parking: 100 per day (in/out privileges)\nCrib fee: 75.0 per night\nRollaway bed: 300.0 per night\nCredit card surcharge: 5 percent\nFees and deposits may not include tax and are subject to change."
+        ]
+      }
+    },
+
+    {
+      "hotelId": 12,
+      "sectionsMap": {
+        "attractions": [
+          "Distances are displayed to the nearest 0.1 mile and kilometer.\nCity Walk - 1.5 km / 0.9 mi\nMuseum of the Future - 1.6 km / 1 mi\nDubai Aquarium & Underwater Zoo - 2.1 km / 1.3 mi\nDubai Mall - 2.2 km / 1.3 mi\nDubai World Trade Centre - 2.4 km / 1.5 mi",
+          "Emaar Square - 2.4 km / 1.5 mi\nCoca-Cola Arena - 2.4 km / 1.5 mi\nBurj Khalifa - 2.7 km / 1.7 mi\nDubai Opera - 2.8 km / 1.7 mi\nKidZania - 2.8 km / 1.7 mi",
+          "Dubai Fountain - 3 km / 1.9 mi\nDubai International Convention and Exhibition Centre - 3.1 km / 1.9 mi\nSouk al Bahar - 3.1 km / 1.9 mi\nLa Mer North Beach - 3.3 km / 2.1 mi\nJumaira Plaza - 3.4 km / 2.1 mi",
+          "Nearest airports:\nDubai Intl. Airport (DXB) - 12.6 km / 7.8 mi\nSharjah (SHJ-Sharjah Intl.) - 41 km / 25.5 mi\nAl Maktoum Intl. Airport (DWC) - 54.5 km / 33.9 mi"
+        ],
+        "policy": [
+          "Check-in: From 03:00 pm\nLate check-in requires contacting property to avoid cancellation\nCheck-out: Until 12:00 pm",
+          "Extra-person charges may apply\nGovernment-issued ID and credit card/debit card/cash deposit may be required at check-in\nSpecial requests subject to availability and may incur additional charges\nProperty accepts credit cards, debit cards, and cash",
+          "Property reserves the right to pre-authorize credit cards\nCashless transactions available\nEco-friendly cleaning products used\nNoise-free guestrooms cannot be guaranteed",
+          "Safety features include fire extinguisher, security system, first aid kit, window guards\nSmoke detector available\nHost will greet guests on arrival"
+        ],
+        "important": [
+          "Pool access: 8:00 AM – 8:00 PM\nOnly registered guests allowed in guestrooms\nConnecting/adjoining rooms subject to availability\nNo pets and no service animals allowed\nAlcohol not served or permitted\nCashless payment methods available"
+        ],
+        "fees": [
+          "Mandatory fees:\nDeposit: 500 per accommodation, per stay\nCity tax: 20 per accommodation per night for one bedroom\n40 per night for two bedrooms\n60 per night for three bedrooms",
+          "Optional fees:\nRollaway bed: 100.0 per night\nFees and deposits may not include tax and are subject to change."
+        ]
+      }
+    },
+
+    {
+  "hotelId": 14,
+  "sectionsMap": {
+    "attractions": [
+      "Distances are displayed to the nearest 0.1 mile and kilometer.\nBahrain Financial Harbour - 1.6 km / 1 mi\nModa Mall - 1.7 km / 1.1 mi\nBahrain World Trade Center - 1.8 km / 1.1 mi\nMuseum of Pearl Diving - 1.8 km / 1.1 mi\nYateem Centre - 1.8 km / 1.1 mi",
+      "Bab Al Bahrain - 1.9 km / 1.2 mi\nManama Souq - 2.1 km / 1.3 mi\nThe Avenues Bahrain - 2.1 km / 1.3 mi\nGold Souq - 2.3 km / 1.4 mi\nLa Fontaine Centre of Contemporary Art - 2.7 km / 1.7 mi",
+      "Bahrain National Museum - 3.1 km / 1.9 mi\nBeit Al Qur'an - 3.3 km / 2.1 mi\nBahrain National Theater - 3.4 km / 2.1 mi\nCity Center Mall - 4.2 km / 2.6 mi\nDana Mall - 4.4 km / 2.7 mi",
+      "Nearest airport:\nManama (BAH-Bahrain Intl.) - 11 km / 6.9 mi"
+    ],
+    "policy": [
+      "Check-in: From 03:00 pm\nLate check-in requires contacting Almosafer or the property directly to avoid cancellation\nCheck-out: Until 12:00 pm",
+      "Extra-person charges may apply and vary by property policy\nGovernment-issued photo ID and credit/debit card or cash deposit may be required at check-in\nSpecial requests subject to availability and may incur additional charges\nProperty accepts credit cards and cash",
+      "Safety features include fire extinguisher, smoke detector, and security system\nOutdoor spaces (balconies, patios, terraces) may not be suitable for children\nProperty enforces a strict dress code in all public areas",
+      "Airport transfer available (surcharge applies); guests must contact property with arrival details before travel\nFront desk staff will greet guests on arrival"
+    ],
+    "important": [
+      "Children stay free when using existing bedding in parent or guardian's room",
+      "Connecting/adjoining rooms subject to availability and can be requested via booking confirmation contact number",
+      "No pets and no service animals allowed at this property"
+    ],
+    "fees": [
+      "Optional fees:\nBuffet breakfast: approximately BHD 10.16 for adults and BHD 5.08 for children\nAirport shuttle: BHD 25 per vehicle (one-way, maximum 3 passengers)",
+      "Fees and deposits may not include tax and are subject to change"
+    ]
+  }
+},
+
+{
+  "hotelId": 15,
+  "sectionsMap": {
+    "attractions": [
+      "Distances are displayed to the nearest 0.1 mile and kilometer.\nJuffair Beach - 0.4 km / 0.3 mi\nMatrix BH Amusement Center - 1.3 km / 0.8 mi\nJuffair Mall - 1.3 km / 0.8 mi\nJuffair Square Shopping Center - 1.4 km / 0.9 mi\nOasis Mall - 1.7 km / 1.1 mi",
+      "Al Fateh Grand Mosque - 1.7 km / 1.1 mi\nBahrain National Museum - 3.2 km / 2 mi\nBahrain National Theater - 3.6 km / 2.3 mi\nBeit Al Qur'an - 4.1 km / 2.6 mi\nLa Fontaine Centre of Contemporary Art - 4.8 km / 3 mi",
+      "Muharraq Souq - 5 km / 3.1 mi\nThe Avenues Bahrain - 5.6 km / 3.5 mi\nBahrain World Trade Center - 5.6 km / 3.5 mi\nModa Mall - 5.7 km / 3.5 mi\nMemory of the Place Bin Matar House - 5.8 km / 3.6 mi",
+      "Nearest major airport:\nManama (BAH-Bahrain Intl.) - 12.9 km / 8 mi"
+    ],
+    "policy": [
+      "Check-in: From 03:00 pm\nLate check-in requires contacting Almosafer or the property directly to avoid cancellation\nCheck-out: Until 12:00 pm",
+      "Extra-person charges may apply and vary by property policy\nGovernment-issued photo ID and credit/debit card or cash deposit may be required at check-in\nName on credit card must match primary guest name on reservation",
+      "Property accepts credit cards, debit cards, mobile payments (Google Pay), and cash\nProperty reserves the right to pre-authorize credit cards prior to arrival\nCashless transactions available",
+      "Outdoor spaces (balconies, patios, terraces) may not be suitable for children\nProperty follows CleanStay (Hilton) cleaning and disinfection practices",
+      "Airport transfers available (surcharge applies); guests must contact property with arrival details before travel\nFront desk staff will greet guests on arrival\nDuring Ramadan, sahur may replace breakfast and iftar may replace dinner for eligible rate plans"
+    ],
+    "important": [
+      "Seasonal pool open from January 01 to December 31\nPool access from 7:00 AM to 6:00 PM",
+      "Reservations required for massage and spa treatments; contact property prior to arrival",
+      "Pets allowed upon request (surcharges apply); service animals exempt from fees",
+      "Cashless payment methods available for all transactions\nContactless check-in and check-out available"
+    ],
+    "fees": [
+      "Optional fees:\nBuffet breakfast: approximately BHD 13 for adults and BHD 6.5 for children\nAirport shuttle: BHD 10 per vehicle (one-way, maximum 4 passengers)\nPet fee: BHD 5 per pet per night\nService animals exempt from fees",
+      "Rollaway bed: BHD 10.0 per day\nService fee: 10 percent\nFees and deposits may not include tax and are subject to change"
+    ]
+  }
+},
+
+{
+  "hotelId": 16,
+  "sectionsMap": {
+    "attractions": [
+      "Distances are displayed to the nearest 0.1 mile and kilometer.\nManyal Palace Museum - 1.5 km / 0.9 mi\nAl Fustat Garden - 1.8 km / 1.1 mi\nDjoser's Pyramid - 1.8 km / 1.1 mi\nKefre, the second pyramid - 2.4 km / 1.5 mi\nEgyptian Museum - 3.2 km / 2 mi",
+      "Talaat Harb Street - 3.3 km / 2 mi\nLeague of Arab States - 3.4 km / 2.1 mi\nRoyal Chariots Museum - 3.4 km / 2.1 mi\nMikerinos Pyramid - 3.5 km / 2.2 mi\nAlabaster Sphinx - 3.5 km / 2.2 mi",
+      "Egyptian National Railways Museum - 3.6 km / 2.2 mi\nTahrir Square - 3.6 km / 2.3 mi\nMidan Talaat Harb - 3.8 km / 2.4 mi\nAmerican University of Cairo - 3.8 km / 2.4 mi\nOmar Makram Mosque - 3.9 km / 2.4 mi",
+      "Nearest airports:\nCairo Intl. Airport (CAI) - 21.9 km / 13.6 mi\nGiza (SPX-Sphinx Intl.) - 45.9 km / 28.5 mi\nPreferred airport: Cairo Intl. Airport (CAI)"
+    ],
+    "policy": [
+      "Check-in: From 03:00 pm\nLate check-in requires contacting property to avoid cancellation\nCheck-out: Until 12:00 pm",
+      "Extra-person charges may apply\nGovernment-issued ID and credit/debit card or cash deposit may be required at check-in\nMinimum check-in age for Spring Break: 16 years",
+      "Property accepts credit cards, debit cards, and cash\nName on credit card must match primary guest name\nProperty reserves right to pre-authorize credit cards",
+      "Safety features include carbon monoxide detector, fire extinguisher, smoke detector, security system, first aid kit, window guards\nProperty follows ALLSAFE (Accor Hotels) cleaning standards",
+      "Airport transfers available (surcharge); guests must contact property 24 hours before arrival\nFront desk staff will greet guests on arrival\nContactless check-out available\nCultural policies may vary by country"
+    ],
+    "important": [
+      "Local laws may restrict unmarried guests from sharing rooms; proof of marriage may be requested",
+      "Reservations required for spa and massage services prior to arrival",
+      "Only registered guests allowed in guestrooms\nConnecting/adjoining rooms subject to availability",
+      "No pets and no service animals allowed\nParking height restrictions apply"
+    ],
+    "fees": [
+      "Mandatory fees:\nAdministrative fee: EGP 50 per person per night\nFees include taxes as provided by property",
+      "Optional fees:\nBuffet breakfast: ~EGP 360 per person\nAirport shuttle: EGP 1600 per vehicle (roundtrip)\nSelf parking: EGP 300 per day\nValet parking: EGP 130 per day\nRollaway bed: EGP 490 per night\nLate check-out available for a fee\nFees and deposits may change"
+    ]
+  }
+},
+
+{
+  "hotelId": 17,
+  "sectionsMap": {
+    "attractions": [
+      "Distances are displayed to the nearest 0.1 mile and kilometer.\nMr & Mrs Mahmoud Khalil Museum - 1 km / 0.6 mi\nAl-Ahly Sports Club - 1.1 km / 0.7 mi\nCairo Opera House - 1.1 km / 0.7 mi\nMuseum of Egyptian Modern Arts - 1.2 km / 0.7 mi\nLeague of Arab States - 1.3 km / 0.8 mi",
+      "Tahrir Square - 1.4 km / 0.8 mi\nSixth of October Bridge - 1.4 km / 0.8 mi\nOmar Makram Mosque - 1.4 km / 0.9 mi\nCairo Tower - 1.4 km / 0.9 mi\nTalaat Harb Street - 1.6 km / 1 mi",
+      "Mikerinos Pyramid - 1.6 km / 1 mi\nAlabaster Sphinx - 1.6 km / 1 mi\nEgyptian Museum - 1.6 km / 1 mi\nAmerican University of Cairo - 1.7 km / 1 mi\nQasr El Nil Bridge - 1.9 km / 1.2 mi",
+      "Nearest airports:\nCairo Intl. Airport (CAI) - 23.4 km / 14.5 mi\nGiza (SPX-Sphinx Intl.) - 42.4 km / 26.4 mi\nPreferred airport: Cairo Intl. Airport (CAI)"
+    ],
+    "policy": [
+      "Check-in: From 03:00 am To 03:00 am\nLate check-in requires contacting property to avoid cancellation\nCheck-out: Until 12:00 pm",
+      "Extra-person charges may apply\nGovernment-issued ID and credit/debit card or cash deposit may be required at check-in\nSpecial requests subject to availability and may incur additional charges",
+      "Property accepts credit cards, debit cards, and cash\nEco-friendly cleaning products used\nProperty reserves right to pre-authorize credit cards",
+      "Safety features include fire extinguisher, smoke detector, security system, and first aid kit\nALLSAFE (Accor Hotels) cleaning standards followed",
+      "Front desk staff will greet guests on arrival\nAfter-hours check-in not available\nContactless check-in and check-out available\nCultural policies may vary by country"
+    ],
+    "important": [
+      "Pool access from 8:00 AM to 7:00 PM",
+      "Reservations required for spa and massage services prior to arrival",
+      "Up to 2 children 12 years and younger stay free when using existing bedding",
+      "Connecting/adjoining rooms subject to availability\nNo pets and no service animals allowed\nCar recommended for transportation"
+    ],
+    "fees": [
+      "Mandatory fees:\nDeposit: EGP 2500 per night\nFees include applicable taxes as provided by property",
+      "Optional fees:\nBuffet breakfast: ~EGP 350 per person\nCovered self parking: EGP 250 per day\nCovered valet parking: EGP 250 per day\nEarly check-in: EGP 1232 (subject to availability)\nRollaway bed: EGP 1103 per night\nLate check-out available for a fee\nFees and deposits may change"
+    ]
+  }
+},
+
+{
+  "hotelId": 18,
+  "sectionsMap": {
+    "attractions": [
+      "Distances are displayed to the nearest 0.1 mile and kilometer.\nGreat Mosque of Makkah - 0.3 km / 0.2 mi\nThe Clock Towers - 0.4 km / 0.3 mi\nWell of Zamzam - 0.5 km / 0.3 mi\nMaqam Ibrahim - 0.5 km / 0.3 mi\nKaaba - 0.5 km / 0.3 mi",
+      "Black Stone - 0.5 km / 0.3 mi\nKing Fahad Gate - 0.6 km / 0.4 mi\nAl-Salam Gate - 0.6 km / 0.4 mi\nAlkhalil Courtyard - 0.8 km / 0.5 mi\nSouk Al-Khalil - 0.8 km / 0.5 mi",
+      "Safa and Marwah - 1 km / 0.6 mi\n60th Street - 1.4 km / 0.9 mi\nAs-Haabee Exhibition - 1.7 km / 1.1 mi\nMasjid Al-Jinn - 1.9 km / 1.2 mi\nAl Malaa Cemetery - 2.2 km / 1.4 mi",
+      "Nearest airport:\nKing Abdulaziz Intl. Airport (JED) - 98.2 km / 61 mi\nPreferred airport for property"
+    ],
+    "policy": [
+      "Check-in: From 06:00 pm\nLate check-in requires contacting property to avoid cancellation\nCheck-out: Until 02:00 pm",
+      "Hajj Season restriction applies from 1 Dhul-Qi'dah 1446 AH to 10 Dhul-Hijjah 1446 AH; only valid permit holders allowed during this period\nSaudi citizens exempt but cannot perform Umrah during restriction",
+      "Extra-person charges may apply\nID and credit/debit card or cash deposit required at check-in\nName on credit card must match reservation\nProperty accepts credit/debit cards and cash",
+      "Safety features include carbon monoxide detector, fire extinguisher, smoke detector, security system, first aid kit, window guards\nEnhanced cleaning and ALLSAFE & Intertek Cristal standards followed",
+      "Front desk staff will greet guests on arrival\nContactless check-in and check-out available\nGuests must reserve parking in advance"
+    ],
+    "important": [
+      "Only Muslims allowed to enter Makkah and Madinah",
+      "No pets and no service animals allowed\nAlcohol not served or permitted",
+      "Connecting/adjoining rooms subject to availability\nNoise-free guestrooms not guaranteed",
+      "Enhanced cleaning protocols in place; 24-hour vacancy between bookings"
+    ],
+    "fees": [
+      "Optional fees collected at property:\nBuffet breakfast: ~⃀ 90 for adults / ⃀ 45 for children\nIn-room WiFi: ⃀ 15 per hour",
+      "Fees and deposits may not include tax and are subject to change"
+    ]
+  }
+},
+
+{
+  "hotelId": 19,
+  "sectionsMap": {
+    "attractions": [
+      "Distances are displayed to the nearest 0.1 mile and kilometer.\nSouk Al-Khalil - 0.3 km / 0.2 mi\nAlkhalil Courtyard - 0.3 km / 0.2 mi\nGreat Mosque of Makkah - 0.3 km / 0.2 mi\nKing Fahad Gate - 0.4 km / 0.2 mi\nThe Clock Towers - 0.4 km / 0.2 mi",
+      "Well of Zamzam - 0.7 km / 0.4 mi\nMaqam Ibrahim - 0.7 km / 0.4 mi\nKaaba - 0.7 km / 0.4 mi\nBlack Stone - 0.7 km / 0.4 mi\nAl-Salam Gate - 0.9 km / 0.6 mi",
+      "60th Street - 1 km / 0.6 mi\nSafa and Marwah - 1.1 km / 0.7 mi\nAs-Haabee Exhibition - 1.3 km / 0.8 mi\nMasjid Al-Jinn - 2.1 km / 1.3 mi\nAl Malaa Cemetery - 2.3 km / 1.4 mi",
+      "Nearest airport:\nKing Abdulaziz Intl. Airport (JED) - 91.7 km / 57 mi\nPreferred airport for property"
+    ],
+    "policy": [
+      "Check-in: From 04:00 pm\nLate check-in requires contacting property to avoid cancellation\nCheck-out: Until 12:00 pm",
+      "Hajj Season restriction applies from 1 Dhul-Qi'dah 1446 AH to 10 Dhul-Hijjah 1446 AH; only permit holders allowed during period\nSaudi citizens exempt but cannot perform Umrah during restriction",
+      "Extra-person charges may apply\nID and credit/debit card or cash deposit required at check-in\nCredit card must match reservation name\nProperty accepts credit/debit cards, mobile payments, and cash\nPre-authorization right reserved",
+      "Safety features include fire extinguisher, smoke detector, security system, first aid kit, outdoor lighting\nCashless and contactless check-in/out available",
+      "Front desk staff will greet guests on arrival\nPolicies subject to local regulations and cultural norms"
+    ],
+    "important": [
+      "Only Muslims allowed in Makkah and Madinah\nNo pets and no service animals allowed",
+      "Couples must provide proof of marriage if requested",
+      "Connecting/adjoining rooms subject to availability",
+      "Umrah license restrictions apply per Ministry regulations\nBookings may be suspended during Hajj period"
+    ],
+    "fees": [
+      "Optional fees collected at property:\nBuffet breakfast: ~⃀ 145 adults / ⃀ 73 children\nValet parking: ⃀ 175 per day\nNearby parking: ⃀ 175 per day (1640 ft away)\nRollaway bed: ⃀ 250 per night",
+      "Hajj-related restrictions apply during specified period\nFees and deposits may not include tax and are subject to change"
+    ]
+  }
+},
+
+{
+  "hotelId": 20,
+  "sectionsMap": {
+    "attractions": [
+      "Distances are displayed to the nearest 0.1 mile and kilometer.\nBomontiada - 0.3 km / 0.2 mi\nHastanesi Memorial Hospital - 1.4 km / 0.9 mi\nIstanbul Cevahir Shopping and Entertainment Centre - 1.6 km / 1 mi\nCity's Nişantaşı Shopping Center - 1.6 km / 1 mi\nLutfi Kirdar Convention and Exhibition Centre - 1.9 km / 1.2 mi",
+      "Trump Towers Istanbul - 2 km / 1.2 mi\nIstanbul Congress Center - 2.1 km / 1.3 mi\nSisli Florence Nightingale Hospital - 2.1 km / 1.3 mi\nMecidiyekoy Square - 2.1 km / 1.3 mi\nAcibadem Taksim Hospital - 2.4 km / 1.5 mi",
+      "Taksim Square - 2.7 km / 1.7 mi\nIstiklal Avenue - 3.2 km / 2 mi\nYildiz - 3.2 km / 2 mi\nTupras Stadium - 3.3 km / 2 mi\nBesiktas Pier - 3.6 km / 2.2 mi",
+      "Nearest airports:\nIstanbul Airport (IST) - 37.2 km / 23.1 mi\nIstanbul Sabiha Gokcen Intl. Airport (SAW) - 41.8 km / 26 mi\nPreferred airport: Istanbul Airport (IST)"
+    ],
+    "policy": [
+      "Check-in: From 03:00 pm\nLate check-in requires contacting property to avoid cancellation\nCheck-out: Until 12:00 pm",
+      "Extra-person charges may apply\nID and credit/debit card or cash deposit required at check-in\nCredit card must match reservation name\nProperty accepts credit/debit cards and cash\nPre-authorization right reserved",
+      "Safety features include carbon monoxide detector, fire extinguisher, smoke detector, security system, first aid kit, window guards\nEco-friendly cleaning and CleanStay (Hilton) standards followed",
+      "Seasonal pool open June 10 to September 27\nPool access 6:00 AM to 11:30 PM\nReservations required for spa and massage services",
+      "Front desk will greet guests\nContactless check-in/out available\nConstruction nearby may cause noise\nFacilities fee applies to guests over 6 years old"
+    ],
+    "important": [
+      "Only registered guests allowed in guestrooms\nConnecting/adjoining rooms subject to availability",
+      "Car not required for transportation",
+      "Pets allowed with deposit and fee; service animals exempt",
+      "Guests may request early check-in or late check-out for a fee"
+    ],
+    "fees": [
+      "Optional fees:\nBuffet breakfast: ~EUR 30 adults / EUR 15 children\nSelf parking: EUR 20 per day\nValet parking: EUR 23 per day\nPet deposit: EUR 45 per stay\nPet fee: EUR 45 per pet per stay",
+      "Service fee: EUR 0 per day\nFees and deposits may not include tax and are subject to change"
+    ]
+  }
+},
+
+{
+  "hotelId": 21,
+  "sectionsMap": {
+    "attractions": [
+      "Distances are displayed to the nearest 0.1 mile and kilometer.\nOzdilek Park Istanbul - 0.2 km / 0.1 mi\nKanyon Mall - 0.5 km / 0.3 mi\nIstanbul Sapphire - 1.2 km / 0.7 mi\nZorlu Center - 1.3 km / 0.8 mi\nZorlu Performing Arts Center - 1.3 km / 0.8 mi",
+      "Trump Towers Istanbul - 2.3 km / 1.4 mi\nMecidiyekoy Square - 2.5 km / 1.6 mi\nYildiz - 2.8 km / 1.8 mi\nIstanbul Cevahir Shopping and Entertainment Centre - 3.1 km / 1.9 mi\nSisli Florence Nightingale Hospital - 3.5 km / 2.2 mi",
+      "Bosphorus - 4 km / 2.5 mi\nOrtaköy Square - 4.1 km / 2.6 mi\nOrtaköy Mosque - 4.2 km / 2.6 mi\nBosphorus Bridge - 4.4 km / 2.7 mi\nHastanesi Memorial Hospital - 4.5 km / 2.8 mi",
+      "Nearest airports:\nIstanbul Airport (IST) - 36.2 km / 22.5 mi\nIstanbul Sabiha Gokcen Intl. Airport (SAW) - 39.8 km / 24.7 mi"
+    ],
+    "policy": [
+      "Check-in: From 02:00 pm To 12:00 am\nLate check-in requires contacting property to avoid cancellation\nCheck-out: Until 12:00 pm",
+      "Extra-person charges may apply\nID and credit/debit card or cash deposit required at check-in\nProperty accepts credit cards; cash not accepted\nEco-friendly cleaning and Count on Us (Wyndham) standards followed",
+      "Safety features include fire extinguisher, smoke detector, security system, and first aid kit\nOutside food not permitted\nContactless check-out available",
+      "Seasonal pool open May to September\nReservations required for massage services; pets allowed with surcharge",
+      "Front desk staff will greet guests on arrival\nPolicies subject to local regulations and property terms"
+    ],
+    "important": [
+      "Pets allowed with deposit and daily fee; service animals exempt\nGuests must contact property in advance to arrange pet stay",
+      "Rollaway beds available for a fee\nValet parking available for a fee",
+      "Reservations required for spa/massage services",
+      "Contactless check-out available"
+    ],
+    "fees": [
+      "Optional fees collected at property:\nBuffet breakfast: ~EUR 48 adults / EUR 24 children\nValet parking: EUR 10 per day\nPet deposit: EUR 100 per stay\nPet fee: EUR 35 per pet per day\nRollaway bed: EUR 50 per day",
+      "Fees and deposits may not include tax and are subject to change"
+    ]
+  }
+}
+
+  ]
+}
