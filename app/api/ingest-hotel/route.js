@@ -6,9 +6,6 @@ import { createClient } from "@supabase/supabase-js";
 import fs from "fs";
 import path from "path";
 
-// -----------------------------
-// CONFIG
-// -----------------------------
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -18,12 +15,9 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-// -----------------------------
-// BULK HOTEL INGESTION
-// -----------------------------
 export async function POST() {
   try {
-    // 1️⃣ Read JSON file
+    // Read JSON file
     const filePath = path.join(process.cwd(), "data", "hotel-content.json");
     const raw = fs.readFileSync(filePath, "utf8");
     const parsed = JSON.parse(raw);
@@ -33,18 +27,18 @@ export async function POST() {
       return NextResponse.json({ error: "Invalid JSON format" }, { status: 400 });
     }
 
-    // 2️⃣ Loop through hotels
+    // Loop through hotels
     for (const hotel of hotels) {
       const hotelId = hotel.hotelId;
       const sectionsMap = hotel.sectionsMap;
       if (!sectionsMap) continue;
 
-      // 3️⃣ Loop through sections
+      // Loop through sections
       for (const sectionType of Object.keys(sectionsMap)) {
         const chunks = sectionsMap[sectionType];
         if (!Array.isArray(chunks) || chunks.length === 0) continue;
 
-        // 4️⃣ Generate embeddings in bulk for all chunks in this section
+        // Generate embeddings in bulk for all chunks in this section
         const embeddingResponse = await openai.embeddings.create({
           model: "text-embedding-3-small",
           input: chunks, // Pass array of strings for batch embedding
@@ -52,7 +46,7 @@ export async function POST() {
 
         const embeddings = embeddingResponse.data.map(d => d.embedding);
 
-        // 5️⃣ Prepare rows for bulk insert
+        // Prepare rows for bulk insert
         const rowsToInsert = chunks.map((content, index) => ({
           hotel_id: hotelId,
           section_type: sectionType,
@@ -61,7 +55,7 @@ export async function POST() {
           embedding: embeddings[index],
         }));
 
-        // 6️⃣ Insert all rows at once
+        // Insert all rows at once
         const { error } = await supabase
           .from("hotel_vector_chunks")
           .insert(rowsToInsert);

@@ -2,39 +2,85 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import OpenAI from "openai";
 
-// ===============================
-// CONFIG
-// ===============================
-
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
+  process.env.SUPABASE_SERVICE_ROLE_KEY,
 );
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// Read allowed origins from .env
-const allowedOrigins =
-  process.env.ALLOWED_ORIGINS?.split(",") || [];
-
-// ===============================
-// CORS HELPERS
-// ===============================
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [];
 
 function corsHeaders(origin) {
   return {
-    "Access-Control-Allow-Origin":
-      allowedOrigins.includes(origin) ? origin : allowedOrigins[0] || "*",
+    "Access-Control-Allow-Origin": allowedOrigins.includes(origin)
+      ? origin
+      : allowedOrigins[0] || "*",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
   };
 }
 
-// ===============================
-// ✅ HANDLE PREFLIGHT (CORS)
-// ===============================
+async function normalizeUserQuestion(question) {
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    temperature: 0,
+    messages: [
+      {
+        role: "system",
+        content: `
+You correct spelling and grammar mistakes.
+
+Rules:
+- Fix words like: checkin → check-in
+- amenitiess → amenities
+- attractionss → attractions
+- poii / poi → attractions
+- fix small typos
+- Do NOT change meaning.
+Return ONLY corrected question.
+`,
+      },
+      {
+        role: "user",
+        content: question,
+      },
+    ],
+  });
+
+  return response.choices[0].message.content.trim();
+}
+
+async function detectIntent(question) {
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    temperature: 0,
+    messages: [
+      {
+        role: "system",
+        content: `
+Classify hotel question.
+
+Return ONLY one word:
+
+ATTRACTIONS
+AMENITIES
+POLICY
+FEES
+UNKNOWN
+`,
+      },
+      {
+        role: "user",
+        content: question,
+      },
+    ],
+  });
+
+  return response.choices[0].message.content.trim();
+}
 
 export async function OPTIONS(req) {
   const origin = req.headers.get("origin");
@@ -46,141 +92,150 @@ export async function OPTIONS(req) {
     });
   }
 
-  return new Response(null, {
-    status: 403,
-  });
+  return new Response(null, { status: 403 });
 }
-
-// ===============================
-// ✅ CHAT ENDPOINT
-// ===============================
 
 export async function POST(req) {
   try {
     const origin = req.headers.get("origin");
-
     const body = await req.json();
-    const question = body.question;
-    const hotelId = body.hotelId;
+
+    let { question, hotelId } = body;
 
     if (!question || !hotelId) {
       return NextResponse.json(
         { error: "Question and hotelId are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    // =====================================
-    // 1️⃣ Fetch Amenities
-    // =====================================
+    // STEP 1 — Normalize Question
 
-    const { data: amenitiesData, error: amenitiesError } =
-      await supabase
+    const correctedQuestion = await normalizeUserQuestion(question);
+
+    console.log("Original Question:", question);
+    console.log("Corrected Question:", correctedQuestion);
+
+    // STEP 2 — Detect Intent
+
+    const intent = await detectIntent(correctedQuestion);
+
+    console.log("Intent:", intent);
+
+    //  STEP 3 — Fetch Amenities
+
+    let amenitiesText = "";
+
+    if (intent === "AMENITIES") {
+      const { data } = await supabase
         .from("hotel_amenities")
-        .select(`
-          amenity_id,
-          amenities(name_en)
-        `)
+        .select(`amenities(name_en)`)
         .eq("hotel_id", hotelId);
 
-    if (amenitiesError) {
-      return NextResponse.json(
-        { error: amenitiesError.message },
-        { status: 500 }
-      );
+      amenitiesText = data?.length
+        ? data.map((a) => `- ${a.amenities?.name_en}`).join("\n")
+        : "No amenities found.";
+
+      console.log("Amenities Data:", data);
     }
 
-    const amenitiesText = amenitiesData?.length
-      ? amenitiesData
-          .map((a) => `- ${a.amenities?.name_en}`)
-          .join("\n")
-      : "No amenities data found";
-
-    // =====================================
-    // 2️⃣ Generate Embedding
-    // =====================================
+    //  STEP 4 — Embedding Generation
 
     const embeddingResponse = await openai.embeddings.create({
       model: "text-embedding-3-small",
-      input: question,
+      input: correctedQuestion,
     });
 
-    const queryEmbedding =
-      embeddingResponse.data[0].embedding;
+    const queryEmbedding = embeddingResponse.data[0].embedding;
 
-    // =====================================
-    // 3️⃣ Vector Search
-    // =====================================
+    console.log("Embedding Length:", queryEmbedding.length);
+    console.log("Embedding Sample:", queryEmbedding.slice(0, 10));
 
-    const { data: matches, error: vectorError } =
-      await supabase.rpc("match_chunks", {
-        query_embedding: queryEmbedding,
-        hotel_id_param: hotelId,
-        match_threshold: 0.5,
-        match_count: 5,
+    // STEP 5 — Vector Search
+
+    console.log("Calling match_chunks RPC...");
+
+    const vectorResult = await supabase.rpc("match_chunks", {
+      query_embedding: queryEmbedding,
+      hotel_id_param: hotelId,
+      match_threshold: 0.2,
+      match_count: 15,
+    });
+
+    const matches = vectorResult?.data || [];
+
+    console.log("Raw Vector Result:", vectorResult);
+    console.log(" Matches Found:", matches.length);
+
+    if (matches.length > 0) {
+      matches.forEach((match, index) => {
+        console.log(`Match #${index + 1}`);
+        console.log("Score:", match.similarity);
+        console.log("Section:", match.section);
+        console.log("Preview:", match.content.slice(0, 200));
       });
-
-    if (vectorError) {
-      return NextResponse.json(
-        { error: vectorError.message },
-        { status: 500 }
-      );
     }
 
-    const context = matches?.length
+    const context = matches.length
       ? matches.map((row) => row.content).join("\n\n")
-      : "No relevant data found";
+      : "No relevant data found.";
 
-    // =====================================
-    // 4️⃣ Generate AI Answer
-    // =====================================
+    console.log("Final Context Sent To LLM:", context.slice(0, 500));
 
-    const completion =
-      await openai.chat.completions.create({
-        model: "gpt-4o-mini",
-        messages: [
-          {
-            role: "system",
-            content:
-              "You are an AI Hotel Assistant for Almosafer. Answer only using provided hotel data.",
-          },
-          {
-            role: "user",
-            content: `
-            Hotel Data:
-            ${context}
+    //  STEP 6 — Generate Final Answer
 
-            Hotel Amenities:
-            ${amenitiesText}
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      temperature: 0.2,
+      max_tokens: 500,
+      messages: [
+        {
+          role: "system",
+          content: `
+You are an AI Hotel Assistant.
 
-            User Question:
-            ${question}
-            `,
-          },
-        ],
-        temperature: 0.2,
-        max_tokens: 300,
-      });
+Rules:
+- Use only provided context.
+- If data not found, say: "No matching information found."
+- Use proper section names.
+- Never invent data.
+`,
+        },
+        {
+          role: "user",
+          content: `
+Corrected Question:
+${correctedQuestion}
 
-    const answer =
-      completion.choices[0].message.content;
+Intent:
+${intent}
 
-    // =====================================
-    // 5️⃣ Return Response With CORS
-    // =====================================
+Hotel Amenities:
+${amenitiesText}
+
+Hotel Data Context:
+${context}
+`,
+        },
+      ],
+    });
+
+    const answer = completion.choices[0].message.content;
 
     return NextResponse.json(
-      { answer },
       {
-        headers: corsHeaders(origin),
-      }
+        answer,
+        intent,
+        correctedQuestion,
+      },
+      { headers: corsHeaders(origin) },
     );
   } catch (err) {
-    console.error("Chat error:", err);
+    console.error("Chat API Error:", err);
 
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
