@@ -13,7 +13,17 @@ const openai = new OpenAI({
 
 const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [];
 
+/*  CORS HANDLING  */
+
 function corsHeaders(origin) {
+  if (!origin) {
+    return {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    };
+  }
+
   return {
     "Access-Control-Allow-Origin": allowedOrigins.includes(origin)
       ? origin
@@ -23,24 +33,32 @@ function corsHeaders(origin) {
   };
 }
 
-async function normalizeUserQuestion(question) {
+/*   QUESTION ANALYSIS (LLM #1)  */
+
+async function analyzeQuestion(question) {
   const response = await openai.chat.completions.create({
     model: "gpt-4o-mini",
     temperature: 0,
+    response_format: { type: "json_object" }, 
     messages: [
       {
         role: "system",
         content: `
-You correct spelling and grammar mistakes.
+You are a hotel AI processor.
 
-Rules:
-- Fix words like: checkin → check-in
-- amenitiess → amenities
-- attractionss → attractions
-- poii / poi → attractions
-- fix small typos
+TASK:
+- Fix spelling & grammar.
+- Classify intent.
+- Normalize words (checkin → check-in, amenitiess → amenities, etc).
 - Do NOT change meaning.
-Return ONLY corrected question.
+
+OUTPUT FORMAT:
+{
+  "correctedQuestion": "string",
+  "intent": "ATTRACTIONS | AMENITIES | POLICY | FEES | UNKNOWN"
+}
+
+Return ONLY valid JSON.
 `,
       },
       {
@@ -50,79 +68,45 @@ Return ONLY corrected question.
     ],
   });
 
-  return response.choices[0].message.content.trim();
+  const parsed = response.choices[0].message.content;
+
+  return JSON.parse(parsed);
 }
 
-async function detectIntent(question) {
-  const response = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
-    temperature: 0,
-    messages: [
-      {
-        role: "system",
-        content: `
-Classify hotel question.
-
-Return ONLY one word:
-
-ATTRACTIONS
-AMENITIES
-POLICY
-FEES
-UNKNOWN
-`,
-      },
-      {
-        role: "user",
-        content: question,
-      },
-    ],
-  });
-
-  return response.choices[0].message.content.trim();
-}
+/*  OPTIONS */
 
 export async function OPTIONS(req) {
   const origin = req.headers.get("origin");
 
-  if (allowedOrigins.includes(origin)) {
-    return new Response(null, {
-      status: 204,
-      headers: corsHeaders(origin),
-    });
-  }
-
-  return new Response(null, { status: 403 });
+  return new Response(null, {
+    status: 204,
+    headers: corsHeaders(origin),
+  });
 }
+
 
 export async function POST(req) {
   try {
     const origin = req.headers.get("origin");
     const body = await req.json();
 
-    let { question, hotelId } = body;
+    const { question, hotelId } = body;
 
     if (!question || !hotelId) {
       return NextResponse.json(
         { error: "Question and hotelId are required" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
-    // STEP 1 — Normalize Question
+    /* STEP 1 — Normalize + Detect Intent (Single LLM Call)  */
 
-    const correctedQuestion = await normalizeUserQuestion(question);
+    const { correctedQuestion, intent } = await analyzeQuestion(question);
 
-    console.log("Original Question:", question);
-    console.log("Corrected Question:", correctedQuestion);
-
-    // STEP 2 — Detect Intent
-
-    const intent = await detectIntent(correctedQuestion);
-
+    console.log("Corrected:", correctedQuestion);
     console.log("Intent:", intent);
 
-    //  STEP 3 — Fetch Amenities
+    /* STEP 2 — Fetch Amenities If Needed  */
 
     let amenitiesText = "";
 
@@ -136,27 +120,22 @@ export async function POST(req) {
         ? data.map((a) => `- ${a.amenities?.name_en}`).join("\n")
         : "No amenities found.";
 
-      console.log("Amenities Data:", data);
+      console.log("Amenities Loaded");
     }
 
-    //  STEP 4 — Embedding Generation
+    /* STEP 3 — Embedding   */
 
-    const embeddingResponse = await openai.embeddings.create({
+    const embeddingQuestion = await openai.embeddings.create({
       model: "text-embedding-3-small",
       input: correctedQuestion,
     });
 
-    const queryEmbedding = embeddingResponse.data[0].embedding;
+    const embeddedQuestionValue = embeddingQuestion.data[0].embedding;
 
-    console.log("Embedding Length:", queryEmbedding.length);
-    console.log("Embedding Sample:", queryEmbedding.slice(0, 10));
-
-    // STEP 5 — Vector Search
-
-    console.log("Calling match_chunks RPC...");
+    /* STEP 4 — Vector Search */
 
     const vectorResult = await supabase.rpc("match_chunks", {
-      query_embedding: queryEmbedding,
+      query_embedding: embeddedQuestionValue,
       hotel_id_param: hotelId,
       match_threshold: 0.2,
       match_count: 15,
@@ -164,25 +143,13 @@ export async function POST(req) {
 
     const matches = vectorResult?.data || [];
 
-    console.log("Raw Vector Result:", vectorResult);
-    console.log(" Matches Found:", matches.length);
-
-    if (matches.length > 0) {
-      matches.forEach((match, index) => {
-        console.log(`Match #${index + 1}`);
-        console.log("Score:", match.similarity);
-        console.log("Section:", match.section);
-        console.log("Preview:", match.content.slice(0, 200));
-      });
-    }
-
     const context = matches.length
       ? matches.map((row) => row.content).join("\n\n")
       : "No relevant data found.";
 
-    console.log("Final Context Sent To LLM:", context.slice(0, 500));
+    console.log("Vector Matches:", matches.length);
 
-    //  STEP 6 — Generate Final Answer
+    /* STEP 5 — Final LLM Answer (Returns Text)  */
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
@@ -194,11 +161,13 @@ export async function POST(req) {
           content: `
 You are an AI Hotel Assistant.
 
-Rules:
+RULES:
 - Use only provided context.
-- If data not found, say: "No matching information found."
-- Use proper section names.
 - Never invent data.
+- Return PLAIN TEXT ONLY.
+- DO NOT use markdown.
+- DO NOT use #, *, **, ###.
+- If data not found, return the fallback message.
 `,
         },
         {
@@ -210,17 +179,31 @@ ${correctedQuestion}
 Intent:
 ${intent}
 
-Hotel Amenities:
+Amenities:
 ${amenitiesText}
 
-Hotel Data Context:
+Context:
 ${context}
 `,
         },
       ],
     });
 
-    const answer = completion.choices[0].message.content;
+    let answer = completion.choices[0].message.content || "";
+
+    function cleanText(text) {
+      if (!text) return "";
+
+      return text
+        .replace(/[#*`]/g, "")
+        .replace(/^>\s?/gm, "")
+        .replace(/\n{3,}/g, "\n\n")
+        .trim();
+    }
+
+    answer = cleanText(answer);
+
+    console.log("Final Answer:", answer);
 
     return NextResponse.json(
       {
@@ -228,14 +211,17 @@ ${context}
         intent,
         correctedQuestion,
       },
-      { headers: corsHeaders(origin) },
+      {
+        headers: corsHeaders(origin),
+      }
     );
-  } catch (err) {
-    console.error("Chat API Error:", err);
+
+  } catch (error) {
+    console.error("Chat API Error:", error);
 
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
