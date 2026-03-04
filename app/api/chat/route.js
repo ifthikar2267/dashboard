@@ -39,7 +39,7 @@ async function analyzeQuestion(question) {
   const response = await openai.chat.completions.create({
     model: "gpt-4o-mini",
     temperature: 0,
-    response_format: { type: "json_object" }, 
+    response_format: { type: "json_object" },
     messages: [
       {
         role: "system",
@@ -84,7 +84,6 @@ export async function OPTIONS(req) {
   });
 }
 
-
 export async function POST(req) {
   try {
     const origin = req.headers.get("origin");
@@ -95,7 +94,7 @@ export async function POST(req) {
     if (!question || !hotelId) {
       return NextResponse.json(
         { error: "Question and hotelId are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -151,28 +150,42 @@ export async function POST(req) {
 
     /* STEP 5 — Final LLM Answer (Returns Text)  */
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      temperature: 0.2,
-      max_tokens: 500,
-      messages: [
-        {
-          role: "system",
-          content: `
+    /*  STEP 5 — FINAL LLM ANSWER + FOLLOW UP QUESTIONS  */
+
+const completion = await openai.chat.completions.create({
+  model: "gpt-4o-mini",
+  temperature: 0.2,
+  response_format: { type: "json_object" }, // ✅ Force JSON output
+  messages: [
+    {
+      role: "system",
+      content: `
 You are an AI Hotel Assistant.
 
 RULES:
 - Use only provided context.
 - Never invent data.
-- Return PLAIN TEXT ONLY.
-- DO NOT use markdown.
-- DO NOT use #, *, **, ###.
-- If data not found, return the fallback message.
+- Return JSON only.
+- Do NOT use markdown.
+- Generate 3 relevant follow-up questions based on the answer.
+- Follow-up questions must be useful for hotel booking / hotel information.
+- Do not repeat the same question.
+- If information is missing, suggest relevant next questions.
+
+OUTPUT FORMAT:
+{
+  "answer": "plain text answer",
+  "followUpQuestions": [
+      "question 1",
+      "question 2",
+      "question 3"
+  ]
+}
 `,
-        },
-        {
-          role: "user",
-          content: `
+    },
+    {
+      role: "user",
+      content: `
 Corrected Question:
 ${correctedQuestion}
 
@@ -185,11 +198,12 @@ ${amenitiesText}
 Context:
 ${context}
 `,
-        },
-      ],
-    });
+    },
+  ],
+});
 
     let answer = completion.choices[0].message.content || "";
+    console.log("Initial Answer", answer);
 
     function cleanText(text) {
       if (!text) return "";
@@ -213,15 +227,14 @@ ${context}
       },
       {
         headers: corsHeaders(origin),
-      }
+      },
     );
-
   } catch (error) {
     console.error("Chat API Error:", error);
 
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
