@@ -39,7 +39,7 @@ async function analyzeQuestion(question) {
   const response = await openai.chat.completions.create({
     model: "gpt-4o-mini",
     temperature: 0,
-    response_format: { type: "json_object" }, 
+    response_format: { type: "json_object" },
     messages: [
       {
         role: "system",
@@ -84,7 +84,6 @@ export async function OPTIONS(req) {
   });
 }
 
-
 export async function POST(req) {
   try {
     const origin = req.headers.get("origin");
@@ -95,7 +94,7 @@ export async function POST(req) {
     if (!question || !hotelId) {
       return NextResponse.json(
         { error: "Question and hotelId are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -190,6 +189,7 @@ ${context}
     });
 
     let answer = completion.choices[0].message.content || "";
+    console.log("Initial Answer", answer);
 
     function cleanText(text) {
       if (!text) return "";
@@ -213,15 +213,14 @@ ${context}
       },
       {
         headers: corsHeaders(origin),
-      }
+      },
     );
-
   } catch (error) {
     console.error("Chat API Error:", error);
 
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

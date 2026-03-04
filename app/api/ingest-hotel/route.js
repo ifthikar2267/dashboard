@@ -55,6 +55,8 @@ export async function POST() {
           embedding: embeddings[index],
         }));
 
+        console.log(rowsToInsert);
+
         // Insert all rows at once
         const { error } = await supabase
           .from("hotel_vector_chunks")
