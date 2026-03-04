@@ -165,11 +165,13 @@ RULES:
 - Never invent data.
 - Return PLAIN TEXT ONLY.
 - DO NOT use markdown.
-- DO NOT use #, *, **, ###.
-- Generate 3 relevant follow-up questions based on the answer.
-- Follow-up questions must be useful for hotel booking / hotel information.
-- Do not repeat the same question.
-- If information is missing, suggest relevant next questions.
+- Use only the provided context and do not invent data.
+- Answer the user’s corrected question clearly and accurately.
+- After giving the main answer, generate 3 follow-up questions that are useful for hotel booking or related details.
+- After answering, introduce the follow-up 3 questions with a helpful phrase like: ’If you’d like to explore further, here are some related questions you might consider.
+- Ensure follow-up questions naturally expand the user’s understanding or help them make better decisions.
+- If data is missing, suggest what to ask next to get the needed information.
+- Do not use markdown, symbols like # or *, and do not repeat the same question.
 - If data not found, return the fallback message.
 `,
         },
