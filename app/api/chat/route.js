@@ -150,42 +150,32 @@ export async function POST(req) {
 
     /* STEP 5 — Final LLM Answer (Returns Text)  */
 
-    /*  STEP 5 — FINAL LLM ANSWER + FOLLOW UP QUESTIONS  */
-
-const completion = await openai.chat.completions.create({
-  model: "gpt-4o-mini",
-  temperature: 0.2,
-  response_format: { type: "json_object" }, // ✅ Force JSON output
-  messages: [
-    {
-      role: "system",
-      content: `
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      temperature: 0.2,
+      max_tokens: 500,
+      messages: [
+        {
+          role: "system",
+          content: `
 You are an AI Hotel Assistant.
 
 RULES:
 - Use only provided context.
 - Never invent data.
-- Return JSON only.
-- Do NOT use markdown.
+- Return PLAIN TEXT ONLY.
+- DO NOT use markdown.
+- DO NOT use #, *, **, ###.
 - Generate 3 relevant follow-up questions based on the answer.
 - Follow-up questions must be useful for hotel booking / hotel information.
 - Do not repeat the same question.
 - If information is missing, suggest relevant next questions.
-
-OUTPUT FORMAT:
-{
-  "answer": "plain text answer",
-  "followUpQuestions": [
-      "question 1",
-      "question 2",
-      "question 3"
-  ]
-}
+- If data not found, return the fallback message.
 `,
-    },
-    {
-      role: "user",
-      content: `
+        },
+        {
+          role: "user",
+          content: `
 Corrected Question:
 ${correctedQuestion}
 
@@ -198,9 +188,9 @@ ${amenitiesText}
 Context:
 ${context}
 `,
-    },
-  ],
-});
+        },
+      ],
+    });
 
     let answer = completion.choices[0].message.content || "";
     console.log("Initial Answer", answer);
