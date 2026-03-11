@@ -33,127 +33,110 @@ function corsHeaders(origin) {
   };
 }
 
-/*   QUESTION ANALYSIS (LLM #1)  */
-
-async function analyzeQuestion(question) {
-  const response = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
-    temperature: 0,
-    response_format: { type: "json_object" },
-    messages: [
-      {
-        role: "system",
-        content: `
-You are a hotel AI processor.
-
-TASK:
-- Fix spelling & grammar.
-- Classify intent.
-- Normalize words (checkin → check-in, amenitiess → amenities, etc).
-- Do NOT change meaning.
-
-OUTPUT FORMAT:
-{
-  "correctedQuestion": "string",
-  "intent": "ATTRACTIONS | AMENITIES | POLICY | FEES | UNKNOWN"
+/*  Simple local intent detection to skip LLM #1 */
+function detectIntent(question) {
+  const q = question.toLowerCase();
+  if (q.includes("amenities") || q.includes("gym") || q.includes("pool") || q.includes("spa"))
+    return "AMENITIES";
+  if (q.includes("attraction") || q.includes("nearby") || q.includes("distance"))
+    return "ATTRACTIONS";
+  if (q.includes("check-in") || q.includes("check out") || q.includes("policy"))
+    return "POLICY";
+  if (q.includes("fee") || q.includes("tax") || q.includes("charge"))
+    return "FEES";
+  return "UNKNOWN";
 }
 
-Return ONLY valid JSON.
-`,
-      },
-      {
-        role: "user",
-        content: question,
-      },
-    ],
-  });
+// Split into two arrays
+// structured DB questions
+const AMENITIES_QUESTIONS = [
+  "What amenities are available at this hotel?",
+  "Is a gym available at this hotel?",
+  "Is there a pool at this hotel?",
+  "Does the hotel have a spa?",
+];
 
-  const parsed = response.choices[0].message.content;
+// unstructured DB questions
+const OTHER_QUESTIONS = [
+  "What are the top 5 attractions near this hotel?",
+  "What are the check-in and check-out times for this property?",
+  "Which airports are closest to this property?",
+  "Is there a fee for using the airport shuttle service?",
+  "What mandatory fees are required when staying at this property?",
+];
 
-  return JSON.parse(parsed);
+// Helper to get random element from array
+function getRandomFromArray(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
 }
 
-/*  OPTIONS */
+// Pick one from each category
+function getRandomFollowUps() {
+  const first = getRandomFromArray(AMENITIES_QUESTIONS);
+  const second = getRandomFromArray(OTHER_QUESTIONS);
+  return [first, second];
+}
 
 export async function OPTIONS(req) {
   const origin = req.headers.get("origin");
-
-  return new Response(null, {
-    status: 204,
-    headers: corsHeaders(origin),
-  });
+  return new Response(null, { status: 204, headers: corsHeaders(origin) });
 }
 
 export async function POST(req) {
   try {
     const origin = req.headers.get("origin");
     const body = await req.json();
-
     const { question, hotelId } = body;
 
     if (!question || !hotelId) {
-      return NextResponse.json(
-        { error: "Question and hotelId are required" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "Question and hotelId are required" }, { status: 400 });
     }
 
-    /* STEP 1 — Normalize + Detect Intent (Single LLM Call)  */
+    /* STEP 1 — Skip LLM, use local intent detection */
+    const correctedQuestion = question; // keep original
+    const intent = detectIntent(question);
 
-    const { correctedQuestion, intent } = await analyzeQuestion(question);
+    /* STEP 2 — Fetch amenities and embedding in parallel */
+    const amenitiesPromise =
+      intent === "AMENITIES"
+        ? supabase.from("hotel_amenities").select(`amenities(name_en)`).eq("hotel_id", hotelId)
+        : Promise.resolve({ data: [] });
 
-    console.log("Corrected:", correctedQuestion);
-    console.log("Intent:", intent);
-
-    /* STEP 2 — Fetch Amenities If Needed  */
-
-    let amenitiesText = "";
-
-    if (intent === "AMENITIES") {
-      const { data } = await supabase
-        .from("hotel_amenities")
-        .select(`amenities(name_en)`)
-        .eq("hotel_id", hotelId);
-
-      amenitiesText = data?.length
-        ? data.map((a) => `- ${a.amenities?.name_en}`).join("\n")
-        : "No amenities found.";
-
-      console.log("Amenities Loaded");
-    }
-
-    /* STEP 3 — Embedding   */
-
-    const embeddingQuestion = await openai.embeddings.create({
+    const embeddingPromise = openai.embeddings.create({
       model: "text-embedding-3-small",
       input: correctedQuestion,
     });
 
-    const embeddedQuestionValue = embeddingQuestion.data[0].embedding;
+    const [amenitiesResult, embeddingResult] = await Promise.all([amenitiesPromise, embeddingPromise]);
 
-    /* STEP 4 — Vector Search */
+    let amenitiesText = "";
+    if (intent === "AMENITIES") {
+      const data = amenitiesResult.data;
+      amenitiesText = data?.length
+        ? data.map((a) => `- ${a.amenities?.name_en}`).join("\n")
+        : "No amenities found.";
+    }
 
+    const embeddedQuestionValue = embeddingResult.data[0].embedding;
+
+    /* STEP 3 — Vector search (limit results for faster LLM) */
     const vectorResult = await supabase.rpc("match_chunks", {
       query_embedding: embeddedQuestionValue,
       hotel_id_param: hotelId,
       match_threshold: 0.2,
-      match_count: 15,
+      match_count: 8,
     });
 
     const matches = vectorResult?.data || [];
-
     const context = matches.length
       ? matches.map((row) => row.content).join("\n\n")
       : "No relevant data found.";
 
-    console.log("Vector Matches:", matches.length);
-
-    /* STEP 5 — Final LLM Answer (Returns Text)  */
-
+    /* STEP 4 — Final LLM call with reduced tokens */
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       temperature: 0.2,
-      max_tokens: 500,
+      max_tokens: 200, // smaller token count
       messages: [
         {
           role: "system",
@@ -161,17 +144,29 @@ export async function POST(req) {
 You are an AI Hotel Assistant.
 
 RULES:
-- Use only provided context.
-- Never invent data.
-- Return PLAIN TEXT ONLY.
-- DO NOT use markdown.
-- Use only the provided context and do not invent data.
-- Answer the user’s corrected question clearly and accurately.
-- After giving the main answer, generate 3 follow-up questions that are useful for hotel booking or related details.
-- After answering, introduce the follow-up 3 questions with a helpful phrase like: ’If you’d like to explore further, here are some related questions you might consider.
-- Ensure follow-up questions naturally expand the user’s understanding or help them make better decisions.
-- If data is missing, suggest what to ask next to get the needed information.
-- Do not use markdown, symbols like # or *, and do not repeat the same question.
+1. Use only the provided database context.
+2. Do not invent data.
+3. Answer the corrected question clearly and accurately.
+4. If data is not found, return the fallback message.
+5. After the main answer, generate exactly 2 follow-up questions.
+6. Follow-up questions must be directly related to the available data sections:
+- Attractions and distances
+- Airports and transportation
+- Property policies
+- Check in and check out
+- Fees and taxes
+- Amenities
+7. Follow-up questions must be derived from information present in the context.
+8. Do not generate unrelated questions like booking confirmation or payment unless that information exists in the context.
+9. Do not repeat the same question.
+10. Do not use markdown, symbols, special formatting, or headings.
+11. Do not use #, *, **, ### or similar formatting.
+
+After answering, add this line:
+
+Related questions:
+
+Then list exactly 2 follow-up questions.
 - If data not found, return the fallback message.
 `,
         },
@@ -195,38 +190,21 @@ ${context}
     });
 
     let answer = completion.choices[0].message.content || "";
-    console.log("Initial Answer", answer);
+    const followUps = getRandomFollowUps();
+
+    answer = answer.replace(/related questions\s*:[\s\S]*/i, "").trim();
+    answer += "\n\nRelated questions:\n" + followUps.join("\n");
 
     function cleanText(text) {
       if (!text) return "";
-
-      return text
-        .replace(/[#*`]/g, "")
-        .replace(/^>\s?/gm, "")
-        .replace(/\n{3,}/g, "\n\n")
-        .trim();
+      return text.replace(/[#*`]/g, "").replace(/^>\s?/gm, "").replace(/\n{3,}/g, "\n\n").trim();
     }
 
     answer = cleanText(answer);
 
-    console.log("Final Answer:", answer);
-
-    return NextResponse.json(
-      {
-        answer,
-        intent,
-        correctedQuestion,
-      },
-      {
-        headers: corsHeaders(origin),
-      },
-    );
+    return NextResponse.json({ answer, intent, correctedQuestion }, { headers: corsHeaders(origin) });
   } catch (error) {
     console.error("Chat API Error:", error);
-
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
