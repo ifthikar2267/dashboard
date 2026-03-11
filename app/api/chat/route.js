@@ -190,17 +190,26 @@ ${context}
     });
 
     let answer = completion.choices[0].message.content || "";
-    const followUps = getRandomFollowUps();
+    // Generate follow-ups
+const followUps = getRandomFollowUps();
 
-    answer = answer.replace(/related questions\s*:[\s\S]*/i, "").trim();
-    answer += "\n\nRelated questions:\n" + followUps.join("\n");
+// Remove any old Related questions section
+answer = answer.replace(/related questions\s*:[\s\S]*/i, "").trim();
 
-    function cleanText(text) {
-      if (!text) return "";
-      return text.replace(/[#*`]/g, "").replace(/^>\s?/gm, "").replace(/\n{3,}/g, "\n\n").trim();
-    }
+// Append follow-ups properly formatted for frontend parsing
+answer += "\nRelated questions:\n" + followUps.map(q => `- ${q}`).join("\n");
 
-    answer = cleanText(answer);
+// Clean the answer
+function cleanText(text) {
+  if (!text) return "";
+  return text
+    .replace(/[#*`]/g, "")
+    .replace(/^>\s?/gm, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+answer = cleanText(answer);
 
     return NextResponse.json({ answer, intent, correctedQuestion }, { headers: corsHeaders(origin) });
   } catch (error) {
