@@ -33,12 +33,33 @@ function corsHeaders(origin) {
   };
 }
 
+//normalize
+function normalizeSemantics(question) {
+  const map = {
+    poi: "attraction",
+    "points of interest": "attraction",
+    lift: "elevator",
+    wifi: "internet",
+    spa: "wellness/spa",
+    "check in": "check-in",
+    "check out": "check-out",
+  };
+
+  let q = question.toLowerCase();
+  for (const key in map) {
+    const regex = new RegExp(`\\b${key}\\b`, "gi");
+    q = q.replace(regex, map[key]);
+  }
+
+  return q;
+}
+
 /*  Simple local intent detection to skip LLM #1 */
 function detectIntent(question) {
   const q = question.toLowerCase();
-  if (q.includes("amenities") || q.includes("gym") || q.includes("pool") || q.includes("spa"))
+  if (q.includes("amenities") || q.includes("gym") || q.includes("pool") || q.includes("spa") || q.includes("wifi") || q.includes("parking") || q.includes("non-smoking") || q.includes("lifts"))
     return "AMENITIES";
-  if (q.includes("attraction") || q.includes("nearby") || q.includes("distance"))
+  if (q.includes("attraction") || q.includes("nearby") || q.includes("distance") || q.includes("poi"))
     return "ATTRACTIONS";
   if (q.includes("check-in") || q.includes("check out") || q.includes("policy"))
     return "POLICY";
@@ -47,7 +68,7 @@ function detectIntent(question) {
   return "UNKNOWN";
 }
 
-// Split into two arrays
+// Follow up related questions
 // structured DB questions
 const AMENITIES_QUESTIONS = [
   "What amenities are available at this hotel?",
@@ -93,7 +114,7 @@ export async function POST(req) {
     }
 
     /* STEP 1 — Skip LLM, use local intent detection */
-    const correctedQuestion = question; // keep original
+    const correctedQuestion = normalizeSemantics(question);
     const intent = detectIntent(question);
 
     /* STEP 2 — Fetch amenities and embedding in parallel */
