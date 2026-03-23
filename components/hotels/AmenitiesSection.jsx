@@ -112,7 +112,7 @@ export default function AmenitiesSection({ selectedAmenities = [], onChange }) {
         </div>
       ) : (
         <p className="text-sm text-gray-500 text-center py-4">
-          No amenities available. Please add amenities in Master Data.
+          No amenities are currently available. Please add them via Master Data.
         </p>
       )}
     </div>
