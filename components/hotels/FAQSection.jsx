@@ -121,13 +121,13 @@ export default function FAQSection({ faqs, onChange }) {
         </div>
       ) : (
         <div className="text-center py-8 border border-dashed border-gray-300 rounded-lg">
-          <p className="text-sm text-gray-500 mb-2"> No FAQs are currently available.</p>
+          <p className="text-sm text-gray-700 mb-2"> No FAQs are currently available.</p>
           <button
             type="button"
             onClick={handleAdd}
             className="text-sm text-blue-600 hover:text-blue-700 font-medium"
           >
-            + Add your first FAQ
+            + Add your first FAQs
           </button>
         </div>
       )}
